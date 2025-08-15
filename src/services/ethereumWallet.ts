@@ -73,7 +73,7 @@ export class EthereumWalletService {
     }
   }
 
-  async getTransactionHistory(address: string): Promise<any[]> {
+  async getTransactionHistory(_address: string): Promise<any[]> {
     // This would typically use an API like Etherscan
     // For demo purposes, returning empty array
     return [];
