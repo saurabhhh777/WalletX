@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import { useWallet } from '../contexts/WalletContext';
 import { EthereumTab } from './EthereumTab';
 import { SolanaTab } from './SolanaTab';
-import { Wallet, Coins, Settings, RefreshCw } from 'lucide-react';
+import { Wallet, Coins, Settings, RefreshCw, Home } from 'lucide-react';
 
-export const WalletDashboard: React.FC = () => {
+interface WalletDashboardProps {
+  onGoHome?: () => void;
+}
+
+export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) => {
   const { ethereumWallet, solanaWallet, refreshBalances, clearWallets } = useWallet();
   const [activeTab, setActiveTab] = useState<'ethereum' | 'solana'>('ethereum');
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -43,6 +47,16 @@ export const WalletDashboard: React.FC = () => {
             </div>
             
             <div className="flex items-center space-x-3">
+              {onGoHome && (
+                <button
+                  onClick={onGoHome}
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center space-x-2"
+                >
+                  <Home className="h-4 w-4" />
+                  <span>Home</span>
+                </button>
+              )}
+              
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
