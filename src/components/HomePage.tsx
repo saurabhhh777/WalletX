@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useWallet } from '../contexts/WalletContext';
 import { Wallet, Coins, Sparkles, Shield, Zap, Globe, CheckCircle, Star, Phone, Smartphone, Mail, Twitter, Github, Linkedin } from 'lucide-react';
+import { CryptoPriceTicker } from './CryptoPriceTicker';
 
 export const HomePage: React.FC = () => {
   const { createEthereumWallet, createSolanaWallet } = useWallet();
@@ -113,6 +114,11 @@ export const HomePage: React.FC = () => {
             <div className="text-gray-400 font-bold text-xl font-jost">Arbitrum</div>
             <div className="text-gray-400 font-bold text-xl font-jost">Optimism</div>
           </div>
+        </div>
+
+        {/* Live Crypto Prices */}
+        <div className="py-12">
+          <CryptoPriceTicker />
         </div>
 
         {/* Quick Setup Section */}

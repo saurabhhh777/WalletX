@@ -9,22 +9,28 @@ export interface SolanaWallet {
 export class SolanaWalletService {
   private connection: Connection;
 
-  constructor(rpcUrl: string = 'https://api.mainnet-beta.solana.com') {
+  constructor(rpcUrl: string = 'https://api.devnet.solana.com') {
     this.connection = new Connection(rpcUrl, 'confirmed');
   }
 
   async createWallet(): Promise<SolanaWallet> {
-    const keypair = Keypair.generate();
-    const address = keypair.publicKey.toString();
-    const privateKey = Buffer.from(keypair.secretKey).toString('base64');
-    
-    const balance = await this.getBalance(address);
-    
-    return {
-      address,
-      privateKey,
-      balance
-    };
+    try {
+      const keypair = Keypair.generate();
+      const address = keypair.publicKey.toString();
+      const privateKey = Buffer.from(keypair.secretKey).toString('base64');
+      
+      // Initialize balance to 0 for new wallets
+      const balance = '0';
+      
+      return {
+        address,
+        privateKey,
+        balance
+      };
+    } catch (error) {
+      console.error('Error creating Solana wallet:', error);
+      throw new Error('Failed to create Solana wallet. Please try again.');
+    }
   }
 
   async importWallet(privateKeyBase64: string): Promise<SolanaWallet> {
@@ -40,7 +46,8 @@ export class SolanaWalletService {
         balance
       };
     } catch (error) {
-      throw new Error('Invalid private key');
+      console.error('Error importing Solana wallet:', error);
+      throw new Error('Invalid private key. Please check and try again.');
     }
   }
 
@@ -78,6 +85,7 @@ export class SolanaWalletService {
       const signature = await this.connection.sendTransaction(transaction, [fromKeypair]);
       return signature;
     } catch (error) {
+      console.error('Error sending Solana transaction:', error);
       throw new Error(`Transaction failed: ${error}`);
     }
   }
@@ -119,6 +127,7 @@ export class SolanaWalletService {
       await this.connection.confirmTransaction(signature);
       return signature;
     } catch (error) {
+      console.error('Error requesting Solana airdrop:', error);
       throw new Error(`Airdrop failed: ${error}`);
     }
   }
