@@ -6,6 +6,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'jost': ['Jost', 'sans-serif'],
+        'mulish': ['Mulish', 'sans-serif'],
+        'poppins': ['Poppins', 'sans-serif'],
+      },
+    },
   },
 } satisfies Config 

@@ -1,28 +1,21 @@
 import React, { useState } from 'react';
 import { useWallet } from '../contexts/WalletContext';
-import { Copy, Download, Upload, Send, Eye, EyeOff } from 'lucide-react';
+import { Download, Upload, Send, Copy, Check } from 'lucide-react';
 
 export const EthereumTab: React.FC = () => {
-  const {
-    ethereumWallet,
-    createEthereumWallet,
-    importEthereumWallet,
-    sendEthereumTransaction,
-  } = useWallet();
-
-  const [showPrivateKey, setShowPrivateKey] = useState(false);
-  const [importKey, setImportKey] = useState('');
-  const [toAddress, setToAddress] = useState('');
+  const { ethereumWallet, createEthereumWallet, importEthereumWallet, sendEthereumTransaction } = useWallet();
+  const [privateKey, setPrivateKey] = useState('');
+  const [recipientAddress, setRecipientAddress] = useState('');
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const handleCreateWallet = async () => {
     setIsLoading(true);
     setError('');
     setSuccess('');
-    
     try {
       await createEthereumWallet();
       setSuccess('Ethereum wallet created successfully!');
@@ -34,19 +27,17 @@ export const EthereumTab: React.FC = () => {
   };
 
   const handleImportWallet = async () => {
-    if (!importKey.trim()) {
+    if (!privateKey.trim()) {
       setError('Please enter a private key');
       return;
     }
-
     setIsLoading(true);
     setError('');
     setSuccess('');
-    
     try {
-      await importEthereumWallet(importKey.trim());
+      await importEthereumWallet(privateKey);
       setSuccess('Ethereum wallet imported successfully!');
-      setImportKey('');
+      setPrivateKey('');
     } catch (err) {
       setError('Invalid private key. Please check and try again.');
     } finally {
@@ -55,27 +46,20 @@ export const EthereumTab: React.FC = () => {
   };
 
   const handleSendTransaction = async () => {
-    if (!toAddress.trim() || !amount.trim()) {
+    if (!recipientAddress.trim() || !amount.trim()) {
       setError('Please fill in all fields');
       return;
     }
-
-    if (parseFloat(amount) <= 0) {
-      setError('Amount must be greater than 0');
-      return;
-    }
-
     setIsLoading(true);
     setError('');
     setSuccess('');
-    
     try {
-      const txHash = await sendEthereumTransaction(toAddress.trim(), amount);
-      setSuccess(`Transaction sent successfully! Hash: ${txHash}`);
-      setToAddress('');
+      await sendEthereumTransaction(recipientAddress, amount);
+      setSuccess('Transaction sent successfully!');
+      setRecipientAddress('');
       setAmount('');
     } catch (err) {
-      setError('Transaction failed. Please check your balance and try again.');
+      setError('Failed to send transaction. Please check your inputs and try again.');
     } finally {
       setIsLoading(false);
     }
@@ -83,236 +67,153 @@ export const EthereumTab: React.FC = () => {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    setSuccess('Copied to clipboard!');
-    setTimeout(() => setSuccess(''), 2000);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  const downloadWallet = () => {
-    if (!ethereumWallet) return;
-    
-    const walletData = {
-      address: ethereumWallet.address,
-      privateKey: ethereumWallet.privateKey,
-      network: 'Ethereum',
-      createdAt: new Date().toISOString(),
-    };
-    
-    const blob = new Blob([JSON.stringify(walletData, null, 2)], {
-      type: 'application/json',
-    });
-    
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `ethereum-wallet-${ethereumWallet.address.slice(0, 6)}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
-  if (!ethereumWallet) {
-    return (
-      <div className="space-y-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Ethereum Wallet</h2>
-          <p className="text-gray-600">Create a new wallet or import an existing one to get started</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Create New Wallet */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-blue-500 p-2 rounded-lg">
-                <Download className="h-5 w-5 text-white" />
-              </div>
-              <h3 className="text-lg font-semibold">Create New Wallet</h3>
-            </div>
-            <p className="text-gray-600 mb-4">
-              Generate a new Ethereum wallet with a fresh private key and address.
+  return (
+    <div className="space-y-6 font-poppins">
+      {!ethereumWallet ? (
+        <div className="space-y-6">
+          {/* Create Wallet */}
+          <div className="bg-gray-50 rounded-xl p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 font-jost">Create New Ethereum Wallet</h3>
+            <p className="text-gray-600 mb-4 font-mulish">
+              Generate a new Ethereum wallet with a secure private key.
             </p>
             <button
               onClick={handleCreateWallet}
               disabled={isLoading}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 w-full"
+              className="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center space-x-2"
             >
-              {isLoading ? 'Creating...' : 'Create Wallet'}
+              <Download className="h-4 w-4" />
+              <span>Create Wallet</span>
             </button>
           </div>
 
           {/* Import Wallet */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-blue-500 p-2 rounded-lg">
-                <Upload className="h-5 w-5 text-white" />
-              </div>
-              <h3 className="text-lg font-semibold">Import Wallet</h3>
-            </div>
-            <p className="text-gray-600 mb-4">
-              Import an existing wallet using your private key.
+          <div className="bg-gray-50 rounded-xl p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 font-jost">Import Existing Wallet</h3>
+            <p className="text-gray-600 mb-4 font-mulish">
+              Import an existing Ethereum wallet using your private key.
             </p>
-            <div className="space-y-3">
-              <input
-                type="password"
-                placeholder="Enter private key"
-                value={importKey}
-                onChange={(e) => setImportKey(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">Private Key</label>
+                <input
+                  type="password"
+                  value={privateKey}
+                  onChange={(e) => setPrivateKey(e.target.value)}
+                  placeholder="Enter your private key"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mulish"
+                />
+              </div>
               <button
                 onClick={handleImportWallet}
-                disabled={isLoading || !importKey.trim()}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 w-full"
+                disabled={isLoading}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center space-x-2"
               >
-                {isLoading ? 'Importing...' : 'Import Wallet'}
+                <Upload className="h-4 w-4" />
+                <span>Import Wallet</span>
               </button>
             </div>
           </div>
         </div>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-800">{error}</p>
+      ) : (
+        <div className="space-y-6">
+          {/* Wallet Info */}
+          <div className="bg-gray-50 rounded-xl p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 font-jost">Wallet Information</h3>
+            <div className="space-y-3 font-mulish">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Address:</span>
+                <div className="flex items-center space-x-2">
+                  <span className="font-mono text-sm">{ethereumWallet.address}</span>
+                  <button
+                    onClick={() => copyToClipboard(ethereumWallet.address)}
+                    className="text-blue-600 hover:text-blue-700"
+                  >
+                    {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600">Balance:</span>
+                <span className="font-semibold">{ethereumWallet.balance} ETH</span>
+              </div>
+            </div>
           </div>
-        )}
 
-        {success && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <p className="text-green-800">{success}</p>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Ethereum Wallet</h2>
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={downloadWallet}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center space-x-2"
-          >
-            <Download className="h-4 w-4" />
-            <span>Export</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Wallet Info */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold mb-4">Wallet Information</h3>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Address
-            </label>
-            <div className="flex items-center space-x-2">
-              <input
-                type="text"
-                value={ethereumWallet.address}
-                readOnly
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent flex-1"
-              />
+          {/* Send Transaction */}
+          <div className="bg-gray-50 rounded-xl p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 font-jost">Send Transaction</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">Recipient Address</label>
+                <input
+                  type="text"
+                  value={recipientAddress}
+                  onChange={(e) => setRecipientAddress(e.target.value)}
+                  placeholder="0x..."
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mulish"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2 font-poppins">Amount (ETH)</label>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="0.0"
+                  step="0.0001"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mulish"
+                />
+              </div>
               <button
-                onClick={() => copyToClipboard(ethereumWallet.address)}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+                onClick={handleSendTransaction}
+                disabled={isLoading}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center space-x-2"
               >
-                <Copy className="h-4 w-4" />
+                <Send className="h-4 w-4" />
+                <span>Send Transaction</span>
               </button>
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Private Key
-            </label>
+          {/* Export Private Key */}
+          <div className="bg-gray-50 rounded-xl p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 font-jost">Export Private Key</h3>
+            <p className="text-gray-600 mb-4 font-mulish">
+              <strong>Warning:</strong> Never share your private key with anyone. It provides full access to your wallet.
+            </p>
             <div className="flex items-center space-x-2">
               <input
-                type={showPrivateKey ? 'text' : 'password'}
+                type="password"
                 value={ethereumWallet.privateKey}
                 readOnly
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent flex-1"
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 font-mono text-sm font-mulish"
               />
               <button
-                onClick={() => setShowPrivateKey(!showPrivateKey)}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
-              >
-                {showPrivateKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-              <button
                 onClick={() => copyToClipboard(ethereumWallet.privateKey)}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+                className="bg-gray-900 text-white px-4 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors"
               >
-                <Copy className="h-4 w-4" />
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </button>
             </div>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Balance
-            </label>
-            <div className="text-2xl font-bold text-gray-900">
-              {parseFloat(ethereumWallet.balance).toFixed(6)} ETH
-            </div>
-          </div>
         </div>
-      </div>
+      )}
 
-      {/* Send Transaction */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold mb-4">Send Transaction</h3>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              To Address
-            </label>
-            <input
-              type="text"
-              placeholder="0x..."
-              value={toAddress}
-              onChange={(e) => setToAddress(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Amount (ETH)
-            </label>
-            <input
-              type="number"
-              placeholder="0.0"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              step="0.000001"
-              min="0"
-            />
-          </div>
-
-          <button
-            onClick={handleSendTransaction}
-            disabled={isLoading || !toAddress.trim() || !amount.trim()}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 w-full flex items-center justify-center space-x-2"
-          >
-            <Send className="h-4 w-4" />
-            <span>{isLoading ? 'Sending...' : 'Send Transaction'}</span>
-          </button>
-        </div>
-      </div>
-
+      {/* Error/Success Messages */}
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-800">{error}</p>
+          <p className="text-red-800 font-medium">{error}</p>
         </div>
       )}
 
       {success && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <p className="text-green-800">{success}</p>
+          <p className="text-green-800 font-medium">{success}</p>
         </div>
       )}
     </div>

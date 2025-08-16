@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useWallet } from '../contexts/WalletContext';
 import { EthereumTab } from './EthereumTab';
 import { SolanaTab } from './SolanaTab';
-import { Wallet, Coins, Settings, RefreshCw, Home } from 'lucide-react';
+import { RefreshCw, Trash2, Home } from 'lucide-react';
 
 interface WalletDashboardProps {
-  onGoHome?: () => void;
+  onGoHome: () => void;
 }
 
 export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) => {
@@ -15,62 +15,51 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    try {
-      await refreshBalances();
-    } catch (error) {
-      console.error('Error refreshing balances:', error);
-    } finally {
-      setIsRefreshing(false);
-    }
+    await refreshBalances();
+    setIsRefreshing(false);
   };
 
   const handleClearWallets = () => {
-    if (confirm('Are you sure you want to clear all wallets? This action cannot be undone.')) {
+    if (window.confirm('Are you sure you want to clear all wallets? This action cannot be undone.')) {
       clearWallets();
+      onGoHome();
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white font-poppins">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-r from-blue-500 to-purple-500 p-2 rounded-lg">
-                <Wallet className="h-6 w-6 text-white" />
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center space-x-4">
+              <div className="bg-gray-900 p-3 rounded-lg">
+                <Home className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">WalletX</h1>
-                <p className="text-sm text-gray-500">Multi-chain Web3 Wallet</p>
+                <h1 className="text-2xl font-bold text-gray-900 font-jost">WalletX Dashboard</h1>
               </div>
             </div>
-            
-            <div className="flex items-center space-x-3">
-              {onGoHome && (
-                <button
-                  onClick={onGoHome}
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center space-x-2"
-                >
-                  <Home className="h-4 w-4" />
-                  <span>Home</span>
-                </button>
-              )}
-              
+            <div className="flex items-center space-x-4">
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center space-x-2"
+                className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center space-x-2 font-poppins"
               >
                 <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                 <span>Refresh</span>
               </button>
-              
+              <button
+                onClick={onGoHome}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors font-poppins"
+              >
+                Home
+              </button>
               <button
                 onClick={handleClearWallets}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center space-x-2"
+                className="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors flex items-center space-x-2 font-poppins"
               >
-                <Settings className="h-4 w-4" />
+                <Trash2 className="h-4 w-4" />
                 <span>Clear All</span>
               </button>
             </div>
@@ -80,92 +69,90 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Wallet Status Cards */}
+        {/* Wallet Status */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* Ethereum Status */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between">
+          <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
-                <div className="bg-blue-500 p-2 rounded-lg">
-                  <Coins className="h-5 w-5 text-white" />
+                <div className="bg-blue-100 p-2 rounded-lg">
+                  <div className="w-6 h-6 bg-blue-600 rounded-full"></div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Ethereum</h3>
-                  <p className="text-sm text-gray-500">
-                    {ethereumWallet ? 'Wallet Connected' : 'No Wallet'}
-                  </p>
-                </div>
+                <h3 className="text-lg font-bold text-gray-900 font-jost">Ethereum Wallet</h3>
               </div>
-              {ethereumWallet && (
-                <div className="text-right">
-                  <p className="text-lg font-semibold text-gray-900">
-                    {parseFloat(ethereumWallet.balance).toFixed(4)} ETH
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {ethereumWallet.address.slice(0, 6)}...{ethereumWallet.address.slice(-4)}
-                  </p>
-                </div>
-              )}
+              <span className={`px-3 py-1 rounded-full text-xs font-medium font-poppins ${
+                ethereumWallet ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+              }`}>
+                {ethereumWallet ? 'Connected' : 'Not Created'}
+              </span>
             </div>
+            {ethereumWallet && (
+              <div className="space-y-2 font-mulish">
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Address:</span> {ethereumWallet.address.slice(0, 6)}...{ethereumWallet.address.slice(-4)}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Balance:</span> {ethereumWallet.balance} ETH
+                </p>
+              </div>
+            )}
           </div>
 
-          {/* Solana Status */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between">
+          <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
-                <div className="bg-purple-500 p-2 rounded-lg">
-                  <Coins className="h-5 w-5 text-white" />
+                <div className="bg-purple-100 p-2 rounded-lg">
+                  <div className="w-6 h-6 bg-purple-600 rounded-full"></div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Solana</h3>
-                  <p className="text-sm text-gray-500">
-                    {solanaWallet ? 'Wallet Connected' : 'No Wallet'}
-                  </p>
-                </div>
+                <h3 className="text-lg font-bold text-gray-900 font-jost">Solana Wallet</h3>
               </div>
-              {solanaWallet && (
-                <div className="text-right">
-                  <p className="text-lg font-semibold text-gray-900">
-                    {parseFloat(solanaWallet.balance).toFixed(4)} SOL
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {solanaWallet.address.slice(0, 6)}...{solanaWallet.address.slice(-4)}
-                  </p>
-                </div>
-              )}
+              <span className={`px-3 py-1 rounded-full text-xs font-medium font-poppins ${
+                solanaWallet ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+              }`}>
+                {solanaWallet ? 'Connected' : 'Not Created'}
+              </span>
             </div>
+            {solanaWallet && (
+              <div className="space-y-2 font-mulish">
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Address:</span> {solanaWallet.address.slice(0, 6)}...{solanaWallet.address.slice(-4)}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Balance:</span> {solanaWallet.balance} SOL
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Tab Navigation */}
-        <div className="border-b border-gray-200 mb-8">
-          <nav className="-mb-px flex space-x-8">
+        <div className="bg-white border border-gray-200 rounded-xl p-6">
+          <div className="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
             <button
               onClick={() => setActiveTab('ethereum')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors font-poppins ${
                 activeTab === 'ethereum'
-                  ? 'border-blue-500 text-blue-500'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Ethereum Wallet
+              Ethereum
             </button>
             <button
               onClick={() => setActiveTab('solana')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors font-poppins ${
                 activeTab === 'solana'
-                  ? 'border-purple-500 text-purple-500'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Solana Wallet
+              Solana
             </button>
-          </nav>
-        </div>
+          </div>
 
-        {/* Tab Content */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          {activeTab === 'ethereum' ? <EthereumTab /> : <SolanaTab />}
+          {/* Tab Content */}
+          <div className="min-h-[400px]">
+            {activeTab === 'ethereum' ? <EthereumTab /> : <SolanaTab />}
+          </div>
         </div>
       </main>
     </div>
