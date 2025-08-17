@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useWallet } from '../contexts/WalletContext';
 import { Download, Upload, Send, Copy, Check, QrCode } from 'lucide-react';
 import { QRCodeModal } from './QRCodeModal';
+import { CryptoPriceTicker } from './CryptoPriceTicker';
 import toast from 'react-hot-toast';
 
 export const EthereumTab: React.FC = () => {
@@ -130,6 +131,12 @@ export const EthereumTab: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-6">
+          {/* Current ETH Price */}
+          <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 font-jost">Current ETH Price</h3>
+            <CryptoPriceTicker />
+          </div>
+
           {/* Wallet Info */}
           <div className="bg-gray-50 rounded-xl p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-4 font-jost">Wallet Information</h3>

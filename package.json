@@ -1,7 +1,7 @@
 {
   "name": "walletx",
   "private": true,
-  "version": "1.5.0",
+  "version": "2.7.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -23,6 +23,7 @@
     "react-dom": "^19.1.1",
     "react-hot-toast": "^2.6.0",
     "react-qr-code": "^2.0.18",
+    "react-router-dom": "^7.8.1",
     "tailwindcss": "^4.1.12"
   },
   "devDependencies": {

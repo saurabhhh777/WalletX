@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useWallet } from '../contexts/WalletContext';
 import { Download, Upload, Send, Copy, Check, Zap, QrCode } from 'lucide-react';
 import { QRCodeModal } from './QRCodeModal';
+import { CryptoPriceTicker } from './CryptoPriceTicker';
 import toast from 'react-hot-toast';
 
 export const SolanaTab: React.FC = () => {
@@ -143,6 +144,12 @@ export const SolanaTab: React.FC = () => {
         </div>
       ) : (
         <div className="space-y-6">
+          {/* Current SOL Price */}
+          <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 font-jost">Current SOL Price</h3>
+            <CryptoPriceTicker />
+          </div>
+
           {/* Wallet Info */}
           <div className="bg-gray-50 rounded-xl p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-4 font-jost">Wallet Information</h3>
