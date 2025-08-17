@@ -10,7 +10,7 @@ interface WalletDashboardProps {
 }
 
 export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) => {
-  const { ethereumWallet, solanaWallet, refreshBalances, clearWallets } = useWallet();
+  const { ethereumWallet, solanaWallet, refreshBalances, clearWallets, networkSettings, getNetworkDisplayName } = useWallet();
   const [activeTab, setActiveTab] = useState<'ethereum' | 'solana'>('ethereum');
   const [showSettings, setShowSettings] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -106,6 +106,9 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
             {ethereumWallet && (
               <div className="space-y-2 font-mulish">
                 <p className="text-sm text-gray-600">
+                  <span className="font-medium">Network:</span> {getNetworkDisplayName('ethereum', networkSettings.ethereum)}
+                </p>
+                <p className="text-sm text-gray-600">
                   <span className="font-medium">Address:</span> {ethereumWallet.address.slice(0, 6)}...{ethereumWallet.address.slice(-4)}
                 </p>
                 <p className="text-sm text-gray-600">
@@ -131,6 +134,9 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
             </div>
             {solanaWallet && (
               <div className="space-y-2 font-mulish">
+                <p className="text-sm text-gray-600">
+                  <span className="font-medium">Network:</span> {getNetworkDisplayName('solana', networkSettings.solana)}
+                </p>
                 <p className="text-sm text-gray-600">
                   <span className="font-medium">Address:</span> {solanaWallet.address.slice(0, 6)}...{solanaWallet.address.slice(-4)}
                 </p>

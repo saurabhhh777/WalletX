@@ -29,6 +29,7 @@ interface WalletContextType {
   // Network Settings
   networkSettings: NetworkSettings;
   updateNetworkSettings: (chain: 'ethereum' | 'solana', network: string) => void;
+  getNetworkDisplayName: (chain: 'ethereum' | 'solana', network: string) => string;
   
   // Common
   refreshBalances: () => Promise<void>;
@@ -92,8 +93,35 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     }
   }
 
+  // Helper function to get network display names
+  function getNetworkDisplayName(chain: 'ethereum' | 'solana', network: string): string {
+    if (chain === 'ethereum') {
+      switch (network) {
+        case 'mainnet':
+          return 'Ethereum Mainnet';
+        case 'sepolia':
+          return 'Sepolia Testnet';
+        case 'goerli':
+          return 'Goerli Testnet';
+        default:
+          return 'Sepolia Testnet';
+      }
+    } else {
+      switch (network) {
+        case 'mainnet':
+          return 'Solana Mainnet';
+        case 'devnet':
+          return 'Solana Devnet';
+        case 'testnet':
+          return 'Solana Testnet';
+        default:
+          return 'Solana Devnet';
+      }
+    }
+  }
+
   // Update network settings and recreate services
-  const updateNetworkSettings = (chain: 'ethereum' | 'solana', network: string) => {
+  const updateNetworkSettings = async (chain: 'ethereum' | 'solana', network: string) => {
     setNetworkSettings(prev => {
       const newSettings = { ...prev, [chain]: network };
       
@@ -106,6 +134,11 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       
       return newSettings;
     });
+
+    // Refresh balances after network change
+    setTimeout(async () => {
+      await refreshBalances();
+    }, 1000); // Small delay to ensure services are updated
   };
 
   // Load wallets and network settings from localStorage on mount
@@ -300,6 +333,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     
     networkSettings,
     updateNetworkSettings,
+    getNetworkDisplayName,
     
     refreshBalances,
     clearWallets,
