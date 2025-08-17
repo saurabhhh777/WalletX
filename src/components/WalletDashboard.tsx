@@ -3,7 +3,7 @@ import { useWallet } from '../contexts/WalletContext';
 import { EthereumTab } from './EthereumTab';
 import { SolanaTab } from './SolanaTab';
 import { SettingsPage } from './SettingsPage';
-import { RefreshCw, Trash2, Home, Settings } from 'lucide-react';
+import { RefreshCw, Trash2, Home, Settings, Coins } from 'lucide-react';
 
 interface WalletDashboardProps {
   onGoHome: () => void;
@@ -93,7 +93,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
                 <div className="bg-blue-100 p-2 rounded-lg">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full"></div>
+                  <Coins className="w-6 h-6 text-blue-600" />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 font-jost">Ethereum Wallet</h3>
               </div>
@@ -119,7 +119,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
                 <div className="bg-purple-100 p-2 rounded-lg">
-                  <div className="w-6 h-6 bg-purple-600 rounded-full"></div>
+                  <Coins className="w-6 h-6 text-purple-600" />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 font-jost">Solana Wallet</h3>
               </div>
@@ -147,23 +147,25 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
           <div className="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
             <button
               onClick={() => setActiveTab('ethereum')}
-              className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors font-poppins ${
+              className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors font-poppins flex items-center justify-center space-x-2 ${
                 activeTab === 'ethereum'
                   ? 'bg-white text-gray-900 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Ethereum
+              <Coins className="w-4 h-4 text-blue-600" />
+              <span>Ethereum</span>
             </button>
             <button
               onClick={() => setActiveTab('solana')}
-              className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors font-poppins ${
+              className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors font-poppins flex items-center justify-center space-x-2 ${
                 activeTab === 'solana'
                   ? 'bg-white text-gray-900 shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Solana
+              <Coins className="w-4 h-4 text-purple-600" />
+              <span>Solana</span>
             </button>
           </div>
 

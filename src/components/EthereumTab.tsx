@@ -211,28 +211,6 @@ export const EthereumTab: React.FC = () => {
               </button>
             </div>
           </div>
-
-          {/* Export Private Key */}
-          <div className="bg-gray-50 rounded-xl p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 font-jost">Export Private Key</h3>
-            <p className="text-gray-600 mb-4 font-mulish">
-              <strong>Warning:</strong> Never share your private key with anyone. It provides full access to your wallet.
-            </p>
-            <div className="flex items-center space-x-2">
-              <input
-                type="password"
-                value={ethereumWallet.privateKey}
-                readOnly
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 font-mono text-sm font-mulish"
-              />
-              <button
-                onClick={() => copyToClipboard(ethereumWallet.privateKey)}
-                className="bg-gray-900 text-white px-4 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors"
-              >
-                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              </button>
-            </div>
-          </div>
         </div>
       )}
 
