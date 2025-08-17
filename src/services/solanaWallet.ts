@@ -13,14 +13,37 @@ export class SolanaWalletService {
     this.connection = new Connection(rpcUrl, 'confirmed');
   }
 
+  // Helper function to convert Uint8Array to base64 string
+  private arrayToBase64(array: Uint8Array): string {
+    const bytes = new Uint8Array(array);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
+  // Helper function to convert base64 string to Uint8Array
+  private base64ToArray(base64: string): Uint8Array {
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return bytes;
+  }
+
   async createWallet(): Promise<SolanaWallet> {
     try {
+      // Generate a new keypair - this doesn't require network connection
       const keypair = Keypair.generate();
       const address = keypair.publicKey.toString();
-      const privateKey = Buffer.from(keypair.secretKey).toString('base64');
+      const privateKey = this.arrayToBase64(keypair.secretKey);
       
       // Initialize balance to 0 for new wallets
       const balance = '0';
+      
+      console.log('Solana wallet created successfully:', { address, balance });
       
       return {
         address,
@@ -29,13 +52,18 @@ export class SolanaWalletService {
       };
     } catch (error) {
       console.error('Error creating Solana wallet:', error);
-      throw new Error('Failed to create Solana wallet. Please try again.');
+      // Provide more specific error information
+      if (error instanceof Error) {
+        throw new Error(`Failed to create Solana wallet: ${error.message}`);
+      } else {
+        throw new Error('Failed to create Solana wallet. Please try again.');
+      }
     }
   }
 
   async importWallet(privateKeyBase64: string): Promise<SolanaWallet> {
     try {
-      const secretKey = Buffer.from(privateKeyBase64, 'base64');
+      const secretKey = this.base64ToArray(privateKeyBase64);
       const keypair = Keypair.fromSecretKey(secretKey);
       const address = keypair.publicKey.toString();
       const balance = await this.getBalance(address);
@@ -68,7 +96,7 @@ export class SolanaWalletService {
     amount: string
   ): Promise<string> {
     try {
-      const secretKey = Buffer.from(fromPrivateKeyBase64, 'base64');
+      const secretKey = this.base64ToArray(fromPrivateKeyBase64);
       const fromKeypair = Keypair.fromSecretKey(secretKey);
       const toPublicKey = new PublicKey(toAddress);
       
@@ -117,7 +145,7 @@ export class SolanaWalletService {
 
   validatePrivateKey(privateKeyBase64: string): boolean {
     try {
-      const secretKey = Buffer.from(privateKeyBase64, 'base64');
+      const secretKey = this.base64ToArray(privateKeyBase64);
       Keypair.fromSecretKey(secretKey);
       return true;
     } catch {

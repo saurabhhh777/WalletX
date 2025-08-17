@@ -137,15 +137,8 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     try {
       const wallet = await solanaService.createWallet();
       setSolanaWallet(wallet);
-      // Refresh balance after a short delay to ensure wallet is properly initialized
-      setTimeout(async () => {
-        try {
-          const balance = await solanaService.getBalance(wallet.address);
-          setSolanaWallet(prev => prev ? { ...prev, balance } : null);
-        } catch (error) {
-          console.error('Error refreshing balance after creation:', error);
-        }
-      }, 1000);
+      // Don't try to refresh balance immediately for new wallets
+      // Balance will be 0 anyway, and we can refresh it later when needed
     } catch (error) {
       console.error('Error creating Solana wallet:', error);
       throw error;
