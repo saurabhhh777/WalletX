@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useWallet } from '../contexts/WalletContext';
 import { EthereumTab } from './EthereumTab';
 import { SolanaTab } from './SolanaTab';
-import { RefreshCw, Trash2, Home } from 'lucide-react';
+import { SettingsPage } from './SettingsPage';
+import { RefreshCw, Trash2, Home, Settings } from 'lucide-react';
 
 interface WalletDashboardProps {
   onGoHome: () => void;
@@ -11,6 +12,7 @@ interface WalletDashboardProps {
 export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) => {
   const { ethereumWallet, solanaWallet, refreshBalances, clearWallets } = useWallet();
   const [activeTab, setActiveTab] = useState<'ethereum' | 'solana'>('ethereum');
+  const [showSettings, setShowSettings] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = async () => {
@@ -25,6 +27,15 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
       onGoHome();
     }
   };
+
+  const handleBackFromSettings = () => {
+    setShowSettings(false);
+  };
+
+  // Show settings page if active
+  if (showSettings) {
+    return <SettingsPage onBack={handleBackFromSettings} />;
+  }
 
   return (
     <div className="min-h-screen bg-white font-poppins">
@@ -48,6 +59,13 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
               >
                 <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                 <span>Refresh</span>
+              </button>
+              <button
+                onClick={() => setShowSettings(true)}
+                className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center space-x-2 font-poppins"
+              >
+                <Settings className="h-4 w-4" />
+                <span>Settings</span>
               </button>
               <button
                 onClick={onGoHome}

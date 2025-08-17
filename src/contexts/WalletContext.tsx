@@ -5,6 +5,11 @@ import type { EthereumWallet } from '../services/ethereumWallet.ts';
 import { SolanaWalletService } from '../services/solanaWallet.ts';
 import type { SolanaWallet } from '../services/solanaWallet.ts';
 
+interface NetworkSettings {
+  ethereum: string;
+  solana: string;
+}
+
 interface WalletContextType {
   // Ethereum
   ethereumWallet: EthereumWallet | null;
@@ -20,6 +25,10 @@ interface WalletContextType {
   importSolanaWallet: (privateKey: string) => Promise<void>;
   sendSolanaTransaction: (toAddress: string, amount: string) => Promise<string>;
   requestSolanaAirdrop: (amount?: number) => Promise<string>;
+  
+  // Network Settings
+  networkSettings: NetworkSettings;
+  updateNetworkSettings: (chain: 'ethereum' | 'solana', network: string) => void;
   
   // Common
   refreshBalances: () => Promise<void>;
@@ -43,15 +52,68 @@ interface WalletProviderProps {
 export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   const [ethereumWallet, setEthereumWallet] = useState<EthereumWallet | null>(null);
   const [solanaWallet, setSolanaWallet] = useState<SolanaWallet | null>(null);
+  const [networkSettings, setNetworkSettings] = useState<NetworkSettings>({
+    ethereum: 'sepolia',
+    solana: 'devnet'
+  });
   
-  const ethereumService = new EthereumWalletService();
-  const solanaService = new SolanaWalletService();
+  // Initialize services with current network settings
+  const [ethereumService, setEthereumService] = useState<EthereumWalletService>(() => 
+    new EthereumWalletService(getEthereumRpcUrl('sepolia'))
+  );
+  const [solanaService, setSolanaService] = useState<SolanaWalletService>(() => 
+    new SolanaWalletService(getSolanaRpcUrl('devnet'))
+  );
 
-  // Load wallets from localStorage on mount
+  // Helper functions to get RPC URLs
+  function getEthereumRpcUrl(network: string): string {
+    switch (network) {
+      case 'mainnet':
+        return 'https://eth-mainnet.g.alchemy.com/v2/demo';
+      case 'sepolia':
+        return 'https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161';
+      case 'goerli':
+        return 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161';
+      default:
+        return 'https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161';
+    }
+  }
+
+  function getSolanaRpcUrl(network: string): string {
+    switch (network) {
+      case 'mainnet':
+        return 'https://api.mainnet-beta.solana.com';
+      case 'devnet':
+        return 'https://api.devnet.solana.com';
+      case 'testnet':
+        return 'https://api.testnet.solana.com';
+      default:
+        return 'https://api.devnet.solana.com';
+    }
+  }
+
+  // Update network settings and recreate services
+  const updateNetworkSettings = (chain: 'ethereum' | 'solana', network: string) => {
+    setNetworkSettings(prev => {
+      const newSettings = { ...prev, [chain]: network };
+      
+      // Update services based on new network settings
+      if (chain === 'ethereum') {
+        setEthereumService(new EthereumWalletService(getEthereumRpcUrl(network)));
+      } else {
+        setSolanaService(new SolanaWalletService(getSolanaRpcUrl(network)));
+      }
+      
+      return newSettings;
+    });
+  };
+
+  // Load wallets and network settings from localStorage on mount
   useEffect(() => {
     const loadWallets = () => {
       const savedEthereumWallet = localStorage.getItem('ethereumWallet');
       const savedSolanaWallet = localStorage.getItem('solanaWallet');
+      const savedNetworkSettings = localStorage.getItem('networkSettings');
       
       if (savedEthereumWallet) {
         setEthereumWallet(JSON.parse(savedEthereumWallet));
@@ -59,6 +121,14 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       
       if (savedSolanaWallet) {
         setSolanaWallet(JSON.parse(savedSolanaWallet));
+      }
+      
+      if (savedNetworkSettings) {
+        const settings = JSON.parse(savedNetworkSettings);
+        setNetworkSettings(settings);
+        // Update services with saved settings
+        setEthereumService(new EthereumWalletService(getEthereumRpcUrl(settings.ethereum)));
+        setSolanaService(new SolanaWalletService(getSolanaRpcUrl(settings.solana)));
       }
     };
     
@@ -82,19 +152,17 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     }
   }, [solanaWallet]);
 
+  // Save network settings to localStorage when they change
+  useEffect(() => {
+    localStorage.setItem('networkSettings', JSON.stringify(networkSettings));
+  }, [networkSettings]);
+
   const createEthereumWallet = async () => {
     try {
       const wallet = await ethereumService.createWallet();
       setEthereumWallet(wallet);
-      // Refresh balance after a short delay to ensure wallet is properly initialized
-      setTimeout(async () => {
-        try {
-          const balance = await ethereumService.getBalance(wallet.address);
-          setEthereumWallet(prev => prev ? { ...prev, balance } : null);
-        } catch (error) {
-          console.error('Error refreshing balance after creation:', error);
-        }
-      }, 1000);
+      // Don't try to refresh balance immediately for new wallets
+      // Balance will be 0 anyway, and we can refresh it later when needed
     } catch (error) {
       console.error('Error creating Ethereum wallet:', error);
       throw error;
@@ -229,6 +297,9 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     importSolanaWallet,
     sendSolanaTransaction,
     requestSolanaAirdrop,
+    
+    networkSettings,
+    updateNetworkSettings,
     
     refreshBalances,
     clearWallets,
