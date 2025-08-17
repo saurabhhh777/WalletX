@@ -1,146 +1,171 @@
-# WalletX - Multi-Chain Wallet Manager
+# WalletX - Multi-Chain Cryptocurrency Wallet
 
-A modern, user-friendly wallet management application supporting Ethereum and Solana networks with advanced features for sending, receiving, and managing cryptocurrency assets.
+A professional-grade multi-chain cryptocurrency wallet supporting Ethereum and Solana with OAuth authentication.
 
-## Features
+## 🏗️ Project Structure
 
-### 🚀 Core Functionality
-- **Multi-Chain Support**: Manage both Ethereum and Solana wallets
-- **Wallet Creation**: Generate new wallets with secure private keys
-- **Wallet Import**: Import existing wallets using private keys
-- **Secure Storage**: Local storage with encrypted private key handling
+```
+WalletX/
+├── frontend/          # React + TypeScript frontend
+├── backend/           # Node.js + TypeScript backend
+└── README.md         # This file
+```
 
-### 💸 Transaction Management
-- **Send Transactions**: Transfer ETH and SOL to any address
-- **Receive Payments**: QR code generation for easy payment reception
-- **Transaction History**: View recent transaction details
-- **Balance Tracking**: Real-time balance updates
+## 🚀 Features
 
-### 🎨 User Experience
-- **Toast Notifications**: Beautiful, non-intrusive notifications for all actions
-- **QR Code Integration**: Generate QR codes for wallet addresses
-- **Modern UI**: Clean, responsive design with Tailwind CSS
-- **Loading States**: Visual feedback during operations
-- **Error Handling**: Comprehensive error messages and recovery
+### Frontend
+- **Multi-Chain Support**: Ethereum and Solana wallets
+- **OAuth Authentication**: Google and GitHub login
+- **Real-time Prices**: Live cryptocurrency price display
+- **QR Code Generation**: Receive payments via QR codes
+- **Network Management**: Switch between testnets and mainnets
+- **Responsive Design**: Works on all devices
+- **Modern UI**: Beautiful, intuitive interface
 
-### 🔧 Technical Features
-- **TypeScript**: Full type safety and better development experience
-- **React 19**: Latest React features and performance optimizations
-- **Vite**: Fast development and build times
-- **Ethers.js**: Ethereum blockchain integration
-- **Solana Web3.js**: Solana blockchain integration
-- **React Hot Toast**: Elegant toast notifications
+### Backend
+- **OAuth Integration**: Google and GitHub authentication
+- **JWT Authentication**: Secure token-based sessions
+- **MongoDB Database**: Persistent user and wallet storage
+- **RESTful API**: Clean, documented endpoints
+- **TypeScript**: Full type safety
+- **Security**: CORS protection, input validation
 
-## Getting Started
+## 🛠️ Tech Stack
+
+### Frontend
+- **React 19** with TypeScript
+- **Vite** for fast development
+- **Tailwind CSS** for styling
+- **React Router** for navigation
+- **Ethers.js** for Ethereum interactions
+- **Solana Web3.js** for Solana interactions
+- **React Hot Toast** for notifications
+- **React QR Code** for QR generation
+
+### Backend
+- **Node.js** with TypeScript
+- **Express.js** framework
+- **MongoDB** with Mongoose
+- **Passport.js** for OAuth
+- **JWT** for authentication
+- **CORS** for cross-origin requests
+
+## 📦 Installation
 
 ### Prerequisites
-- Node.js 18+ 
-- npm or yarn
+- Node.js (v18 or higher)
+- MongoDB (local or cloud)
+- Google OAuth credentials
+- GitHub OAuth credentials
 
-### Installation
+### Quick Start
 
-1. Clone the repository:
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd WalletX
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm run install:all
+   ```
+
+3. **Set up environment variables**:
+   ```bash
+   # Backend
+   cp backend/env.example backend/.env
+   # Edit backend/.env with your credentials
+   ```
+
+4. **Start development servers**:
+   ```bash
+   npm run dev
+   ```
+
+This will start both frontend (http://localhost:5173) and backend (http://localhost:5000).
+
+## 🔧 Development
+
+### Frontend Development
 ```bash
-git clone <repository-url>
-cd WalletX
+cd frontend
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
 ```
 
-2. Install dependencies:
+### Backend Development
 ```bash
-npm install
+cd backend
+npm run dev          # Start development server
+npm run build        # Build for production
+npm start           # Start production server
 ```
 
-3. Start the development server:
+### Monorepo Commands
 ```bash
-npm run dev
+npm run dev          # Start both frontend and backend
+npm run build        # Build both frontend and backend
+npm run start        # Start both in production mode
+npm run clean        # Clean all node_modules and dist folders
 ```
 
-4. Open your browser and navigate to `http://localhost:5173`
+## 🔐 OAuth Setup
 
-### Building for Production
+### Google OAuth
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing
+3. Enable Google+ API
+4. Create OAuth 2.0 credentials
+5. Add authorized redirect URI: `http://localhost:5000/auth/google/callback`
 
+### GitHub OAuth
+1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
+2. Create a new OAuth App
+3. Add callback URL: `http://localhost:5000/auth/github/callback`
+
+## 📚 API Documentation
+
+### Authentication Endpoints
+- `GET /auth/google` - Initiate Google OAuth
+- `GET /auth/google/callback` - Google OAuth callback
+- `GET /auth/github` - Initiate GitHub OAuth
+- `GET /auth/github/callback` - GitHub OAuth callback
+- `POST /auth/logout` - Logout user
+
+### Protected Endpoints
+- `GET /api/profile` - Get user profile
+- `GET /api/wallets` - Get user wallets
+- `PUT /api/wallets` - Update user wallets
+- `PUT /api/network-settings` - Update network settings
+
+## 🔒 Security Features
+
+- **JWT Tokens**: 7-day expiration
+- **CORS Protection**: Configured for frontend origin
+- **Input Validation**: Request validation middleware
+- **Secure Storage**: Encrypted private key storage
+- **OAuth Security**: Industry-standard OAuth 2.0
+
+## 🚀 Deployment
+
+### Frontend Deployment
 ```bash
+cd frontend
 npm run build
+# Deploy dist/ folder to your hosting service
 ```
 
-## Usage
-
-### Creating a Wallet
-1. Click on either "Ethereum" or "Solana" tab
-2. Click "Create Wallet" button
-3. Your new wallet will be generated with a secure private key
-4. Save your private key securely - it provides full access to your wallet
-
-### Importing a Wallet
-1. Click on either "Ethereum" or "Solana" tab
-2. Enter your private key in the import section
-3. Click "Import Wallet"
-4. Your wallet will be loaded and ready to use
-
-### Sending Transactions
-1. Ensure you have a wallet loaded
-2. Enter the recipient's address
-3. Enter the amount to send
-4. Click "Send Transaction"
-5. Wait for confirmation
-
-### Receiving Payments
-1. Click "Show QR Code" in the receive section
-2. Share the QR code or wallet address with the sender
-3. The QR code contains the wallet address for easy scanning
-
-### Requesting Test Tokens (Solana)
-1. Load a Solana wallet
-2. Click "Request Airdrop" to get test SOL tokens
-3. Wait for the airdrop to be processed
-
-## Network Information
-
-### Ethereum
-- **Network**: Sepolia Testnet
-- **RPC URL**: Infura Sepolia
-- **Purpose**: Testing and development
-
-### Solana
-- **Network**: Devnet
-- **RPC URL**: Solana Devnet
-- **Purpose**: Testing and development
-
-## Security Notes
-
-⚠️ **Important Security Warnings**:
-- Never share your private keys with anyone
-- This application stores private keys locally in your browser
-- Use only for testing and development purposes
-- For production use, consider hardware wallets and secure key management
-
-## Development
-
-### Project Structure
-```
-src/
-├── components/          # React components
-│   ├── EthereumTab.tsx  # Ethereum wallet interface
-│   ├── SolanaTab.tsx    # Solana wallet interface
-│   ├── QRCodeModal.tsx  # QR code display modal
-│   └── ...
-├── contexts/            # React contexts
-│   └── WalletContext.tsx # Wallet state management
-├── services/            # Blockchain services
-│   ├── ethereumWallet.ts # Ethereum wallet operations
-│   └── solanaWallet.ts  # Solana wallet operations
-└── ...
+### Backend Deployment
+```bash
+cd backend
+npm run build
+npm start
+# Deploy to your server or cloud platform
 ```
 
-### Key Dependencies
-- `react-hot-toast`: Toast notifications
-- `react-qr-code`: QR code generation
-- `ethers`: Ethereum blockchain interaction
-- `@solana/web3.js`: Solana blockchain interaction
-- `lucide-react`: Icon library
-- `tailwindcss`: Styling framework
-
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -148,10 +173,17 @@ src/
 4. Add tests if applicable
 5. Submit a pull request
 
-## License
+## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License.
 
-## Disclaimer
+## 🆘 Support
 
-This software is provided "as is" without warranty of any kind. Use at your own risk. This application is intended for educational and development purposes only.
+For support and questions:
+- Create an issue on GitHub
+- Check the documentation in each folder
+- Review the API endpoints
+
+---
+
+**WalletX** - Your secure multi-chain cryptocurrency wallet solution! 🚀
