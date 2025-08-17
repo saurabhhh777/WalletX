@@ -55,7 +55,7 @@ export class SolanaWalletService {
     try {
       const publicKey = new PublicKey(address);
       const balance = await this.connection.getBalance(publicKey);
-      return (balance / LAMPORTS_PER_SOL).toString();
+      return (balance / LAMPORTS_PER_SOL).toFixed(9);
     } catch (error) {
       console.error('Error fetching balance:', error);
       return '0';
@@ -72,7 +72,11 @@ export class SolanaWalletService {
       const fromKeypair = Keypair.fromSecretKey(secretKey);
       const toPublicKey = new PublicKey(toAddress);
       
-      const amountLamports = parseFloat(amount) * LAMPORTS_PER_SOL;
+      const amountLamports = Math.floor(parseFloat(amount) * LAMPORTS_PER_SOL);
+      
+      if (amountLamports <= 0) {
+        throw new Error('Amount must be greater than 0');
+      }
       
       const transaction = new Transaction().add(
         SystemProgram.transfer({
@@ -83,6 +87,7 @@ export class SolanaWalletService {
       );
       
       const signature = await this.connection.sendTransaction(transaction, [fromKeypair]);
+      await this.connection.confirmTransaction(signature);
       return signature;
     } catch (error) {
       console.error('Error sending Solana transaction:', error);

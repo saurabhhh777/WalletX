@@ -86,6 +86,15 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     try {
       const wallet = await ethereumService.createWallet();
       setEthereumWallet(wallet);
+      // Refresh balance after a short delay to ensure wallet is properly initialized
+      setTimeout(async () => {
+        try {
+          const balance = await ethereumService.getBalance(wallet.address);
+          setEthereumWallet(prev => prev ? { ...prev, balance } : null);
+        } catch (error) {
+          console.error('Error refreshing balance after creation:', error);
+        }
+      }, 1000);
     } catch (error) {
       console.error('Error creating Ethereum wallet:', error);
       throw error;
@@ -128,6 +137,15 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     try {
       const wallet = await solanaService.createWallet();
       setSolanaWallet(wallet);
+      // Refresh balance after a short delay to ensure wallet is properly initialized
+      setTimeout(async () => {
+        try {
+          const balance = await solanaService.getBalance(wallet.address);
+          setSolanaWallet(prev => prev ? { ...prev, balance } : null);
+        } catch (error) {
+          console.error('Error refreshing balance after creation:', error);
+        }
+      }, 1000);
     } catch (error) {
       console.error('Error creating Solana wallet:', error);
       throw error;
@@ -173,7 +191,10 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     
     try {
       const signature = await solanaService.requestAirdrop(solanaWallet.address, amount);
-      await refreshBalances();
+      // Wait a bit for the airdrop to be processed
+      setTimeout(async () => {
+        await refreshBalances();
+      }, 2000);
       return signature;
     } catch (error) {
       console.error('Error requesting Solana airdrop:', error);

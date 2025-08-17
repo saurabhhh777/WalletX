@@ -1,55 +1,35 @@
-# WalletX - Multi-Chain Web3 Wallet
+# WalletX - Multi-Chain Wallet Manager
 
-A modern, web-based cryptocurrency wallet supporting both Ethereum and Solana networks. Built with React, TypeScript, and Vite for a fast and responsive user experience.
+A modern, user-friendly wallet management application supporting Ethereum and Solana networks with advanced features for sending, receiving, and managing cryptocurrency assets.
 
 ## Features
 
 ### 🚀 Core Functionality
-- **Multi-Chain Support**: Manage both Ethereum and Solana wallets in one interface
-- **Wallet Creation**: Generate new wallets with secure keypairs
+- **Multi-Chain Support**: Manage both Ethereum and Solana wallets
+- **Wallet Creation**: Generate new wallets with secure private keys
 - **Wallet Import**: Import existing wallets using private keys
-- **Transaction Sending**: Send transactions on both networks
-- **Balance Tracking**: Real-time balance updates
-- **Secure Storage**: Local storage with encrypted private keys
+- **Secure Storage**: Local storage with encrypted private key handling
 
-### 🔐 Security Features
-- Private key visibility toggle
-- Secure clipboard operations
-- Wallet export functionality
-- Input validation and error handling
+### 💸 Transaction Management
+- **Send Transactions**: Transfer ETH and SOL to any address
+- **Receive Payments**: QR code generation for easy payment reception
+- **Transaction History**: View recent transaction details
+- **Balance Tracking**: Real-time balance updates
 
 ### 🎨 User Experience
-- Modern, responsive UI built with Tailwind CSS
-- Intuitive tab-based navigation
-- Real-time status updates
-- Loading states and error handling
-- Copy-to-clipboard functionality
+- **Toast Notifications**: Beautiful, non-intrusive notifications for all actions
+- **QR Code Integration**: Generate QR codes for wallet addresses
+- **Modern UI**: Clean, responsive design with Tailwind CSS
+- **Loading States**: Visual feedback during operations
+- **Error Handling**: Comprehensive error messages and recovery
 
-### 🌐 Network Features
-
-#### Ethereum
-- Create new Ethereum wallets
-- Import existing wallets
-- Send ETH transactions
-- View transaction history (placeholder)
-- Balance tracking
-
-#### Solana
-- Create new Solana wallets
-- Import existing wallets
-- Send SOL transactions
-- Request testnet airdrops
-- Balance tracking
-
-## Tech Stack
-
-- **Frontend**: React 19 + TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS
-- **Ethereum**: ethers.js v6
-- **Solana**: @solana/web3.js
-- **Icons**: Lucide React
-- **State Management**: React Context API
+### 🔧 Technical Features
+- **TypeScript**: Full type safety and better development experience
+- **React 19**: Latest React features and performance optimizations
+- **Vite**: Fast development and build times
+- **Ethers.js**: Ethereum blockchain integration
+- **Solana Web3.js**: Solana blockchain integration
+- **React Hot Toast**: Elegant toast notifications
 
 ## Getting Started
 
@@ -83,61 +63,56 @@ npm run dev
 npm run build
 ```
 
-The built files will be in the `dist` directory.
-
 ## Usage
 
-### Creating a New Wallet
+### Creating a Wallet
+1. Click on either "Ethereum" or "Solana" tab
+2. Click "Create Wallet" button
+3. Your new wallet will be generated with a secure private key
+4. Save your private key securely - it provides full access to your wallet
 
-1. Navigate to either the Ethereum or Solana tab
-2. Click "Create New Wallet"
-3. Your new wallet will be generated with a fresh address and private key
-4. **Important**: Save your private key securely - it cannot be recovered if lost
-
-### Importing an Existing Wallet
-
-1. Navigate to either the Ethereum or Solana tab
+### Importing a Wallet
+1. Click on either "Ethereum" or "Solana" tab
 2. Enter your private key in the import section
 3. Click "Import Wallet"
-4. Your wallet will be loaded and you can view your balance
+4. Your wallet will be loaded and ready to use
 
 ### Sending Transactions
-
 1. Ensure you have a wallet loaded
-2. Navigate to the "Send Transaction" section
-3. Enter the recipient's address
-4. Enter the amount to send
-5. Click "Send Transaction"
-6. Wait for confirmation
-
-### Solana Airdrop (Testnet)
-
-1. Load a Solana wallet
-2. Navigate to the "Request Airdrop" section
-3. Enter the amount (max 2 SOL)
-4. Click "Request Airdrop"
+2. Enter the recipient's address
+3. Enter the amount to send
+4. Click "Send Transaction"
 5. Wait for confirmation
 
-## Security Considerations
+### Receiving Payments
+1. Click "Show QR Code" in the receive section
+2. Share the QR code or wallet address with the sender
+3. The QR code contains the wallet address for easy scanning
 
-⚠️ **Important Security Notes**:
+### Requesting Test Tokens (Solana)
+1. Load a Solana wallet
+2. Click "Request Airdrop" to get test SOL tokens
+3. Wait for the airdrop to be processed
 
-- This is a **client-side wallet** - private keys are stored in your browser's localStorage
-- **Never** use this wallet for large amounts of cryptocurrency
-- **Always** test with small amounts first
-- **Backup** your private keys securely
-- **Never** share your private keys with anyone
-- Consider using hardware wallets for significant amounts
-
-## Network Configuration
+## Network Information
 
 ### Ethereum
-- **Mainnet**: Uses Alchemy demo endpoint (for testing)
-- **Testnet**: Can be configured for Goerli/Sepolia
+- **Network**: Sepolia Testnet
+- **RPC URL**: Infura Sepolia
+- **Purpose**: Testing and development
 
 ### Solana
-- **Mainnet**: Uses Solana mainnet RPC
-- **Testnet**: Airdrop functionality works on devnet
+- **Network**: Devnet
+- **RPC URL**: Solana Devnet
+- **Purpose**: Testing and development
+
+## Security Notes
+
+⚠️ **Important Security Warnings**:
+- Never share your private keys with anyone
+- This application stores private keys locally in your browser
+- Use only for testing and development purposes
+- For production use, consider hardware wallets and secure key management
 
 ## Development
 
@@ -145,23 +120,25 @@ The built files will be in the `dist` directory.
 ```
 src/
 ├── components/          # React components
-│   ├── WalletDashboard.tsx
-│   ├── EthereumTab.tsx
-│   └── SolanaTab.tsx
-├── contexts/           # React contexts
-│   └── WalletContext.tsx
-├── services/          # Wallet services
-│   ├── ethereumWallet.ts
-│   └── solanaWallet.ts
-└── App.tsx           # Main app component
+│   ├── EthereumTab.tsx  # Ethereum wallet interface
+│   ├── SolanaTab.tsx    # Solana wallet interface
+│   ├── QRCodeModal.tsx  # QR code display modal
+│   └── ...
+├── contexts/            # React contexts
+│   └── WalletContext.tsx # Wallet state management
+├── services/            # Blockchain services
+│   ├── ethereumWallet.ts # Ethereum wallet operations
+│   └── solanaWallet.ts  # Solana wallet operations
+└── ...
 ```
 
-### Adding New Features
-
-1. **New Networks**: Extend the wallet services and add new tabs
-2. **Token Support**: Integrate token standards (ERC-20, SPL)
-3. **DApp Integration**: Add wallet connection functionality
-4. **Hardware Wallet Support**: Integrate with Ledger/Trezor
+### Key Dependencies
+- `react-hot-toast`: Toast notifications
+- `react-qr-code`: QR code generation
+- `ethers`: Ethereum blockchain interaction
+- `@solana/web3.js`: Solana blockchain interaction
+- `lucide-react`: Icon library
+- `tailwindcss`: Styling framework
 
 ## Contributing
 
@@ -177,15 +154,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Disclaimer
 
-This software is provided "as is" without warranty. Use at your own risk. The developers are not responsible for any loss of funds or other damages that may occur from using this wallet.
-
-## Support
-
-For issues and questions:
-- Create an issue on GitHub
-- Check the documentation
-- Review security best practices
-
----
-
-**Remember**: Always test with small amounts and never share your private keys!
+This software is provided "as is" without warranty of any kind. Use at your own risk. This application is intended for educational and development purposes only.

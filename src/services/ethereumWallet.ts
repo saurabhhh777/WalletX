@@ -9,22 +9,27 @@ export interface EthereumWallet {
 export class EthereumWalletService {
   private provider: ethers.JsonRpcProvider;
 
-  constructor(rpcUrl: string = 'https://eth-mainnet.g.alchemy.com/v2/demo') {
+  constructor(rpcUrl: string = 'https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161') {
     this.provider = new ethers.JsonRpcProvider(rpcUrl);
   }
 
   async createWallet(): Promise<EthereumWallet> {
-    const wallet = ethers.Wallet.createRandom();
-    const address = wallet.address;
-    const privateKey = wallet.privateKey;
-    
-    const balance = await this.getBalance(address);
-    
-    return {
-      address,
-      privateKey,
-      balance
-    };
+    try {
+      const wallet = ethers.Wallet.createRandom();
+      const address = wallet.address;
+      const privateKey = wallet.privateKey;
+      
+      const balance = await this.getBalance(address);
+      
+      return {
+        address,
+        privateKey,
+        balance
+      };
+    } catch (error) {
+      console.error('Error creating Ethereum wallet:', error);
+      throw new Error('Failed to create Ethereum wallet. Please try again.');
+    }
   }
 
   async importWallet(privateKey: string): Promise<EthereumWallet> {
@@ -39,7 +44,8 @@ export class EthereumWalletService {
         balance
       };
     } catch (error) {
-      throw new Error('Invalid private key');
+      console.error('Error importing Ethereum wallet:', error);
+      throw new Error('Invalid private key. Please check and try again.');
     }
   }
 
@@ -69,6 +75,7 @@ export class EthereumWalletService {
       
       return tx.hash;
     } catch (error) {
+      console.error('Error sending Ethereum transaction:', error);
       throw new Error(`Transaction failed: ${error}`);
     }
   }

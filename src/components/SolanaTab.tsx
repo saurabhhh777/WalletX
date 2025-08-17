@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useWallet } from '../contexts/WalletContext';
-import { Download, Upload, Send, Copy, Check, Zap } from 'lucide-react';
+import { Download, Upload, Send, Copy, Check, Zap, QrCode } from 'lucide-react';
+import { QRCodeModal } from './QRCodeModal';
+import toast from 'react-hot-toast';
 
 export const SolanaTab: React.FC = () => {
   const { solanaWallet, createSolanaWallet, importSolanaWallet, sendSolanaTransaction, requestSolanaAirdrop } = useWallet();
@@ -8,19 +10,17 @@ export const SolanaTab: React.FC = () => {
   const [recipientAddress, setRecipientAddress] = useState('');
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [showQRModal, setShowQRModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const handleCreateWallet = async () => {
     setIsLoading(true);
-    setError('');
-    setSuccess('');
     try {
       await createSolanaWallet();
-      setSuccess('Solana wallet created successfully!');
+      toast.success('Solana wallet created successfully!');
     } catch (err) {
-      setError('Failed to create wallet. Please try again.');
+      console.error('Error creating wallet:', err);
+      toast.error('Failed to create wallet. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -28,18 +28,17 @@ export const SolanaTab: React.FC = () => {
 
   const handleImportWallet = async () => {
     if (!privateKey.trim()) {
-      setError('Please enter a private key');
+      toast.error('Please enter a private key');
       return;
     }
     setIsLoading(true);
-    setError('');
-    setSuccess('');
     try {
       await importSolanaWallet(privateKey);
-      setSuccess('Solana wallet imported successfully!');
+      toast.success('Solana wallet imported successfully!');
       setPrivateKey('');
     } catch (err) {
-      setError('Invalid private key. Please check and try again.');
+      console.error('Error importing wallet:', err);
+      toast.error('Invalid private key. Please check and try again.');
     } finally {
       setIsLoading(false);
     }
@@ -47,19 +46,24 @@ export const SolanaTab: React.FC = () => {
 
   const handleSendTransaction = async () => {
     if (!recipientAddress.trim() || !amount.trim()) {
-      setError('Please fill in all fields');
+      toast.error('Please fill in all fields');
       return;
     }
+    
+    if (parseFloat(amount) <= 0) {
+      toast.error('Amount must be greater than 0');
+      return;
+    }
+    
     setIsLoading(true);
-    setError('');
-    setSuccess('');
     try {
-      await sendSolanaTransaction(recipientAddress, amount);
-      setSuccess('Transaction sent successfully!');
+      const signature = await sendSolanaTransaction(recipientAddress, amount);
+      toast.success(`Transaction sent successfully! Signature: ${signature.slice(0, 8)}...`);
       setRecipientAddress('');
       setAmount('');
     } catch (err) {
-      setError('Failed to send transaction. Please check your inputs and try again.');
+      console.error('Error sending transaction:', err);
+      toast.error('Failed to send transaction. Please check your inputs and try again.');
     } finally {
       setIsLoading(false);
     }
@@ -67,13 +71,12 @@ export const SolanaTab: React.FC = () => {
 
   const handleRequestAirdrop = async () => {
     setIsLoading(true);
-    setError('');
-    setSuccess('');
     try {
-      await requestSolanaAirdrop();
-      setSuccess('Airdrop requested successfully! Check your balance in a few moments.');
+      const signature = await requestSolanaAirdrop();
+      toast.success(`Airdrop requested successfully! Check your balance in a few moments. Signature: ${signature.slice(0, 8)}...`);
     } catch (err) {
-      setError('Failed to request airdrop. Please try again.');
+      console.error('Error requesting airdrop:', err);
+      toast.error('Failed to request airdrop. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +85,12 @@ export const SolanaTab: React.FC = () => {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
+    toast.success('Address copied to clipboard!');
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleShowQR = () => {
+    setShowQRModal(true);
   };
 
   return (
@@ -101,7 +109,7 @@ export const SolanaTab: React.FC = () => {
               className="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center space-x-2"
             >
               <Download className="h-4 w-4" />
-              <span>Create Wallet</span>
+              <span>{isLoading ? 'Creating...' : 'Create Wallet'}</span>
             </button>
           </div>
 
@@ -128,7 +136,7 @@ export const SolanaTab: React.FC = () => {
                 className="bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors disabled:opacity-50 flex items-center space-x-2"
               >
                 <Upload className="h-4 w-4" />
-                <span>Import Wallet</span>
+                <span>{isLoading ? 'Importing...' : 'Import Wallet'}</span>
               </button>
             </div>
           </div>
@@ -158,6 +166,21 @@ export const SolanaTab: React.FC = () => {
             </div>
           </div>
 
+          {/* Receive Section */}
+          <div className="bg-gray-50 rounded-xl p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4 font-jost">Receive SOL</h3>
+            <p className="text-gray-600 mb-4 font-mulish">
+              Share your wallet address or QR code to receive SOL payments.
+            </p>
+            <button
+              onClick={handleShowQR}
+              className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center space-x-2"
+            >
+              <QrCode className="h-4 w-4" />
+              <span>Show QR Code</span>
+            </button>
+          </div>
+
           {/* Request Airdrop */}
           <div className="bg-gray-50 rounded-xl p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-4 font-jost">Request Test Airdrop</h3>
@@ -170,7 +193,7 @@ export const SolanaTab: React.FC = () => {
               className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center space-x-2"
             >
               <Zap className="h-4 w-4" />
-              <span>Request Airdrop</span>
+              <span>{isLoading ? 'Requesting...' : 'Request Airdrop'}</span>
             </button>
           </div>
 
@@ -196,6 +219,7 @@ export const SolanaTab: React.FC = () => {
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="0.0"
                   step="0.000000001"
+                  min="0"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent font-mulish"
                 />
               </div>
@@ -205,7 +229,7 @@ export const SolanaTab: React.FC = () => {
                 className="bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors disabled:opacity-50 flex items-center space-x-2"
               >
                 <Send className="h-4 w-4" />
-                <span>Send Transaction</span>
+                <span>{isLoading ? 'Sending...' : 'Send Transaction'}</span>
               </button>
             </div>
           </div>
@@ -234,18 +258,15 @@ export const SolanaTab: React.FC = () => {
         </div>
       )}
 
-      {/* Error/Success Messages */}
-      {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-800 font-medium">{error}</p>
-        </div>
-      )}
-
-      {success && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <p className="text-green-800 font-medium">{success}</p>
-        </div>
-      )}
+      {/* QR Code Modal */}
+      <QRCodeModal
+        isOpen={showQRModal}
+        onClose={() => setShowQRModal(false)}
+        address={solanaWallet?.address || ''}
+        walletType="solana"
+        copied={copied}
+        onCopy={() => copyToClipboard(solanaWallet?.address || '')}
+      />
     </div>
   );
 }; 
