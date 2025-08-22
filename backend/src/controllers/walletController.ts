@@ -24,6 +24,37 @@ export const getUserWallets = async (req: AuthRequest, res: Response): Promise<v
   }
 };
 
+export const getUserWalletsWithPrivateKeys = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const user = await User.findById(req.user._id).select('-__v');
+    
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    // Return wallets with private keys for authenticated users
+    res.json({
+      wallets: {
+        ethereum: user.wallets.ethereum ? {
+          address: user.wallets.ethereum.address,
+          privateKey: user.wallets.ethereum.privateKey,
+          balance: user.wallets.ethereum.balance
+        } : null,
+        solana: user.wallets.solana ? {
+          address: user.wallets.solana.address,
+          privateKey: user.wallets.solana.privateKey,
+          balance: user.wallets.solana.balance
+        } : null
+      },
+      networkSettings: user.networkSettings,
+    });
+  } catch (error) {
+    console.error('Get user wallets with private keys error:', error);
+    res.status(500).json({ message: 'Failed to fetch wallets' });
+  }
+};
+
 export const updateWallets = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { wallets, networkSettings } = req.body;

@@ -6,7 +6,21 @@ interface User {
   email: string;
   name: string;
   avatar?: string;
-  provider: 'google' | 'github';
+  provider: 'google' | 'github' | 'email';
+  wallets?: {
+    ethereum?: {
+      address: string;
+      balance: string;
+    };
+    solana?: {
+      address: string;
+      balance: string;
+    };
+  };
+  networkSettings?: {
+    ethereum: string;
+    solana: string;
+  };
   createdAt: string;
 }
 
@@ -15,7 +29,7 @@ interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (token: string) => void;
+  login: (token: string, userData?: User) => void;
   logout: () => void;
   updateUser: (userData: User) => void;
 }
@@ -76,10 +90,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const login = (authToken: string) => {
+  const login = (authToken: string, userData?: User) => {
     setToken(authToken);
     localStorage.setItem('authToken', authToken);
-    fetchUserProfile(authToken);
+    
+    if (userData) {
+      setUser(userData);
+    } else {
+      fetchUserProfile(authToken);
+    }
   };
 
   const logout = () => {

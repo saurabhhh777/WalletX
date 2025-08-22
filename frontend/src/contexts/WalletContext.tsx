@@ -4,6 +4,7 @@ import { EthereumWalletService } from '../services/ethereumWallet.ts';
 import type { EthereumWallet } from '../services/ethereumWallet.ts';
 import { SolanaWalletService } from '../services/solanaWallet.ts';
 import type { SolanaWallet } from '../services/solanaWallet.ts';
+import { useAuth } from './AuthContext';
 
 interface NetworkSettings {
   ethereum: string;
@@ -34,6 +35,8 @@ interface WalletContextType {
   // Common
   refreshBalances: () => Promise<void>;
   clearWallets: () => void;
+  loadUserWallets: (walletInfo: any) => void;
+  loadWalletsFromBackend: () => Promise<void>;
 }
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
@@ -57,6 +60,8 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     ethereum: 'sepolia',
     solana: 'devnet'
   });
+  
+  const { token } = useAuth();
   
   // Initialize services with current network settings
   const [ethereumService, setEthereumService] = useState<EthereumWalletService>(() => 
@@ -120,6 +125,82 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     }
   }
 
+  // Load user wallets from authentication response
+  const loadUserWallets = (walletInfo: any) => {
+    if (walletInfo.networkSettings) {
+      setNetworkSettings(walletInfo.networkSettings);
+      // Update services with new network settings
+      setEthereumService(new EthereumWalletService(getEthereumRpcUrl(walletInfo.networkSettings.ethereum)));
+      setSolanaService(new SolanaWalletService(getSolanaRpcUrl(walletInfo.networkSettings.solana)));
+    }
+
+    if (walletInfo.ethereum) {
+      setEthereumWallet({
+        address: walletInfo.ethereum.address,
+        balance: walletInfo.ethereum.balance || '0'
+      });
+    }
+
+    if (walletInfo.solana) {
+      setSolanaWallet({
+        address: walletInfo.solana.address,
+        balance: walletInfo.solana.balance || '0'
+      });
+    }
+  };
+
+  // Load wallets from backend with private keys
+  const loadWalletsFromBackend = async () => {
+    if (!token) return;
+
+    try {
+      const response = await fetch('http://localhost:5000/api/wallets/private', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Update network settings
+        if (data.networkSettings) {
+          setNetworkSettings(data.networkSettings);
+          setEthereumService(new EthereumWalletService(getEthereumRpcUrl(data.networkSettings.ethereum)));
+          setSolanaService(new SolanaWalletService(getSolanaRpcUrl(data.networkSettings.solana)));
+        }
+
+        // Load Ethereum wallet
+        if (data.wallets.ethereum) {
+          setEthereumWallet({
+            address: data.wallets.ethereum.address,
+            privateKey: data.wallets.ethereum.privateKey,
+            balance: data.wallets.ethereum.balance || '0'
+          });
+        }
+
+        // Load Solana wallet
+        if (data.wallets.solana) {
+          setSolanaWallet({
+            address: data.wallets.solana.address,
+            privateKey: data.wallets.solana.privateKey,
+            balance: data.wallets.solana.balance || '0'
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error loading wallets from backend:', error);
+    }
+  };
+
+  // Load wallets from backend when token changes
+  useEffect(() => {
+    if (token) {
+      loadWalletsFromBackend();
+    }
+  }, [token]);
+
   // Update network settings and recreate services
   const updateNetworkSettings = async (chain: 'ethereum' | 'solana', network: string) => {
     setNetworkSettings(prev => {
@@ -141,49 +222,55 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     }, 1000); // Small delay to ensure services are updated
   };
 
-  // Load wallets and network settings from localStorage on mount
+  // Load wallets and network settings from localStorage on mount (fallback)
   useEffect(() => {
-    const loadWallets = () => {
-      const savedEthereumWallet = localStorage.getItem('ethereumWallet');
-      const savedSolanaWallet = localStorage.getItem('solanaWallet');
-      const savedNetworkSettings = localStorage.getItem('networkSettings');
+    if (!token) {
+      const loadWallets = () => {
+        const savedEthereumWallet = localStorage.getItem('ethereumWallet');
+        const savedSolanaWallet = localStorage.getItem('solanaWallet');
+        const savedNetworkSettings = localStorage.getItem('networkSettings');
+        
+        if (savedEthereumWallet) {
+          setEthereumWallet(JSON.parse(savedEthereumWallet));
+        }
+        
+        if (savedSolanaWallet) {
+          setSolanaWallet(JSON.parse(savedSolanaWallet));
+        }
+        
+        if (savedNetworkSettings) {
+          const settings = JSON.parse(savedNetworkSettings);
+          setNetworkSettings(settings);
+          // Update services with saved settings
+          setEthereumService(new EthereumWalletService(getEthereumRpcUrl(settings.ethereum)));
+          setSolanaService(new SolanaWalletService(getSolanaRpcUrl(settings.solana)));
+        }
+      };
       
-      if (savedEthereumWallet) {
-        setEthereumWallet(JSON.parse(savedEthereumWallet));
-      }
-      
-      if (savedSolanaWallet) {
-        setSolanaWallet(JSON.parse(savedSolanaWallet));
-      }
-      
-      if (savedNetworkSettings) {
-        const settings = JSON.parse(savedNetworkSettings);
-        setNetworkSettings(settings);
-        // Update services with saved settings
-        setEthereumService(new EthereumWalletService(getEthereumRpcUrl(settings.ethereum)));
-        setSolanaService(new SolanaWalletService(getSolanaRpcUrl(settings.solana)));
-      }
-    };
-    
-    loadWallets();
-  }, []);
-
-  // Save wallets to localStorage when they change
-  useEffect(() => {
-    if (ethereumWallet) {
-      localStorage.setItem('ethereumWallet', JSON.stringify(ethereumWallet));
-    } else {
-      localStorage.removeItem('ethereumWallet');
+      loadWallets();
     }
-  }, [ethereumWallet]);
+  }, [token]);
+
+  // Save wallets to localStorage when they change (fallback for non-authenticated users)
+  useEffect(() => {
+    if (!token) {
+      if (ethereumWallet) {
+        localStorage.setItem('ethereumWallet', JSON.stringify(ethereumWallet));
+      } else {
+        localStorage.removeItem('ethereumWallet');
+      }
+    }
+  }, [ethereumWallet, token]);
 
   useEffect(() => {
-    if (solanaWallet) {
-      localStorage.setItem('solanaWallet', JSON.stringify(solanaWallet));
-    } else {
-      localStorage.removeItem('solanaWallet');
+    if (!token) {
+      if (solanaWallet) {
+        localStorage.setItem('solanaWallet', JSON.stringify(solanaWallet));
+      } else {
+        localStorage.removeItem('solanaWallet');
+      }
     }
-  }, [solanaWallet]);
+  }, [solanaWallet, token]);
 
   // Save network settings to localStorage when they change
   useEffect(() => {
@@ -337,6 +424,8 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     
     refreshBalances,
     clearWallets,
+    loadUserWallets,
+    loadWalletsFromBackend,
   };
 
   return (

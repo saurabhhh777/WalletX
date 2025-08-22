@@ -1,5 +1,6 @@
-import React from 'react';
-import { X, Github } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Github, Mail, Lock, User } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -7,12 +8,59 @@ interface LoginModalProps {
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleGoogleLogin = () => {
     window.location.href = 'http://localhost:5000/auth/google';
   };
 
   const handleGitHubLogin = () => {
     window.location.href = 'http://localhost:5000/auth/github';
+  };
+
+  const handleEmailAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const endpoint = isLogin ? '/auth/login' : '/auth/signup';
+      const response = await fetch(`http://localhost:5000/api${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          ...(isLogin ? {} : { name }),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Store the token
+        localStorage.setItem('authToken', data.token);
+        
+        // Close modal and show success message
+        onClose();
+        toast.success(isLogin ? 'Welcome back!' : 'Account created successfully!');
+        
+        // Reload the page to update the auth state
+        window.location.reload();
+      } else {
+        toast.error(data.message || 'Authentication failed');
+      }
+    } catch (error) {
+      console.error('Auth error:', error);
+      toast.error('An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -31,14 +79,76 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 font-jost mb-2">
-            Welcome to WalletX
+            {isLogin ? 'Welcome Back' : 'Create Your Account'}
           </h2>
           <p className="text-gray-600 font-mulish">
-            Sign in to access your wallets and settings
+            {isLogin 
+              ? 'Sign in to access your wallets and settings'
+              : 'Sign up to create your first wallet'
+            }
           </p>
         </div>
 
-        {/* Login options */}
+        {/* Email/Password Form */}
+        <form onSubmit={handleEmailAuth} className="space-y-4 mb-6">
+          {!isLogin && (
+            <div className="relative">
+              <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mulish"
+                required={!isLogin}
+              />
+            </div>
+          )}
+          
+          <div className="relative">
+            <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mulish"
+              required
+            />
+          </div>
+          
+          <div className="relative">
+            <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mulish"
+              required
+            />
+          </div>
+          
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors font-poppins disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? 'Loading...' : (isLogin ? 'Sign In' : 'Create Account')}
+          </button>
+        </form>
+
+        {/* Divider */}
+        <div className="relative mb-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300" />
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500 font-mulish">Or continue with</span>
+          </div>
+        </div>
+
+        {/* Social Login options */}
         <div className="space-y-4">
           {/* Google Login */}
           <button
@@ -76,10 +186,28 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           </button>
         </div>
 
+        {/* Toggle between login and signup */}
+        <div className="mt-8 text-center">
+          <p className="text-sm text-gray-500 font-mulish">
+            {isLogin ? "Don't have an account? " : "Already have an account? "}
+            <button
+              onClick={() => {
+                setIsLogin(!isLogin);
+                setEmail('');
+                setPassword('');
+                setName('');
+              }}
+              className="text-blue-600 hover:underline font-medium"
+            >
+              {isLogin ? 'Sign up' : 'Sign in'}
+            </button>
+          </p>
+        </div>
+
         {/* Footer */}
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-500 font-mulish">
-            By signing in, you agree to our{' '}
+            By {isLogin ? 'signing in' : 'signing up'}, you agree to our{' '}
             <a href="/terms" className="text-blue-600 hover:underline">
               Terms of Service
             </a>{' '}

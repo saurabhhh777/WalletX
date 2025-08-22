@@ -3,9 +3,10 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface IUser extends Document {
   email: string;
   name: string;
+  password?: string; // Optional for OAuth users
   avatar?: string;
-  provider: 'google' | 'github';
-  providerId: string;
+  provider: 'google' | 'github' | 'email';
+  providerId?: string; // Optional for email users
   wallets: {
     ethereum?: {
       address: string;
@@ -37,17 +38,27 @@ const UserSchema = new Schema<IUser>({
     type: String,
     required: true,
   },
+  password: {
+    type: String,
+    // Required only for email authentication
+    required: function() {
+      return this.provider === 'email';
+    },
+  },
   avatar: {
     type: String,
   },
   provider: {
     type: String,
-    enum: ['google', 'github'],
+    enum: ['google', 'github', 'email'],
     required: true,
   },
   providerId: {
     type: String,
-    required: true,
+    // Required only for OAuth providers
+    required: function() {
+      return this.provider !== 'email';
+    },
   },
   wallets: {
     ethereum: {
@@ -75,7 +86,11 @@ const UserSchema = new Schema<IUser>({
   timestamps: true,
 });
 
-// Create compound index for provider and providerId
-UserSchema.index({ provider: 1, providerId: 1 }, { unique: true });
+// Create compound index for provider and providerId (only for OAuth)
+UserSchema.index({ provider: 1, providerId: 1 }, { 
+  unique: true, 
+  sparse: true, // Allow null values for email users
+  partialFilterExpression: { providerId: { $exists: true } }
+});
 
 export const User = mongoose.model<IUser>('User', UserSchema); 

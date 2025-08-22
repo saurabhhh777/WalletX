@@ -1,5 +1,134 @@
 import { Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
 import { generateToken } from '../middleware/auth';
+import { User } from '../models/User';
+import { EthereumWalletService } from '../services/ethereumWallet';
+import { SolanaWalletService } from '../services/solanaWallet';
+
+// Email/Password Authentication
+export const signup = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, password, name } = req.body;
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      res.status(400).json({ message: 'User already exists with this email' });
+      return;
+    }
+
+    // Hash password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Create wallets for new user
+    const ethereumService = new EthereumWalletService();
+    const solanaService = new SolanaWalletService();
+
+    const ethereumWallet = await ethereumService.createWallet();
+    const solanaWallet = await solanaService.createWallet();
+
+    // Create new user with wallets
+    const user = new User({
+      email,
+      password: hashedPassword,
+      name,
+      provider: 'email',
+      wallets: {
+        ethereum: {
+          address: ethereumWallet.address,
+          privateKey: ethereumWallet.privateKey,
+          balance: ethereumWallet.balance
+        },
+        solana: {
+          address: solanaWallet.address,
+          privateKey: solanaWallet.privateKey,
+          balance: solanaWallet.balance
+        }
+      },
+      networkSettings: {
+        ethereum: 'sepolia',
+        solana: 'devnet'
+      }
+    });
+
+    await user.save();
+
+    // Generate token
+    const token = generateToken(user._id);
+
+    res.status(201).json({
+      message: 'User created successfully',
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        wallets: {
+          ethereum: user.wallets.ethereum ? {
+            address: user.wallets.ethereum.address,
+            balance: user.wallets.ethereum.balance
+          } : null,
+          solana: user.wallets.solana ? {
+            address: user.wallets.solana.address,
+            balance: user.wallets.solana.balance
+          } : null
+        },
+        networkSettings: user.networkSettings
+      }
+    });
+  } catch (error) {
+    console.error('Signup error:', error);
+    res.status(500).json({ message: 'Server error during signup' });
+  }
+};
+
+export const login = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      res.status(401).json({ message: 'Invalid email or password' });
+      return;
+    }
+
+    // Check password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      res.status(401).json({ message: 'Invalid email or password' });
+      return;
+    }
+
+    // Generate token
+    const token = generateToken(user._id);
+
+    res.json({
+      message: 'Login successful',
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        wallets: {
+          ethereum: user.wallets.ethereum ? {
+            address: user.wallets.ethereum.address,
+            balance: user.wallets.ethereum.balance
+          } : null,
+          solana: user.wallets.solana ? {
+            address: user.wallets.solana.address,
+            balance: user.wallets.solana.balance
+          } : null
+        },
+        networkSettings: user.networkSettings
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Server error during login' });
+  }
+};
 
 export const googleAuth = (req: Request, res: Response): void => {
   // This will be handled by passport middleware
@@ -11,9 +140,27 @@ export const googleCallback = (req: Request, res: Response): void => {
     const user = req.user as any;
     const token = generateToken(user._id);
     
-    // Redirect to frontend with token
+    // Redirect to frontend with token and wallet info
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    res.redirect(`${frontendUrl}/auth-callback?token=${token}&provider=google`);
+    const walletInfo = {
+      ethereum: user.wallets.ethereum ? {
+        address: user.wallets.ethereum.address,
+        balance: user.wallets.ethereum.balance
+      } : null,
+      solana: user.wallets.solana ? {
+        address: user.wallets.solana.address,
+        balance: user.wallets.solana.balance
+      } : null,
+      networkSettings: user.networkSettings
+    };
+    
+    const queryParams = new URLSearchParams({
+      token,
+      provider: 'google',
+      wallets: JSON.stringify(walletInfo)
+    });
+    
+    res.redirect(`${frontendUrl}/auth-callback?${queryParams.toString()}`);
   } catch (error) {
     console.error('Google callback error:', error);
     res.status(500).json({ message: 'Authentication failed' });
@@ -30,9 +177,27 @@ export const githubCallback = (req: Request, res: Response): void => {
     const user = req.user as any;
     const token = generateToken(user._id);
     
-    // Redirect to frontend with token
+    // Redirect to frontend with token and wallet info
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    res.redirect(`${frontendUrl}/auth-callback?token=${token}&provider=github`);
+    const walletInfo = {
+      ethereum: user.wallets.ethereum ? {
+        address: user.wallets.ethereum.address,
+        balance: user.wallets.ethereum.balance
+      } : null,
+      solana: user.wallets.solana ? {
+        address: user.wallets.solana.address,
+        balance: user.wallets.solana.balance
+      } : null,
+      networkSettings: user.networkSettings
+    };
+    
+    const queryParams = new URLSearchParams({
+      token,
+      provider: 'github',
+      wallets: JSON.stringify(walletInfo)
+    });
+    
+    res.redirect(`${frontendUrl}/auth-callback?${queryParams.toString()}`);
   } catch (error) {
     console.error('GitHub callback error:', error);
     res.status(500).json({ message: 'Authentication failed' });

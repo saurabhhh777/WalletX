@@ -1,20 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useWallet } from '../contexts/WalletContext';
 import { Loader2 } from 'lucide-react';
 
 export const AuthCallback: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { loadUserWallets } = useWallet();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const token = searchParams.get('token');
+    const walletsParam = searchParams.get('wallets');
+    const userParam = searchParams.get('user');
 
     if (token) {
       try {
-        login(token);
+        let userData = null;
+        
+        // Parse user data if provided
+        if (userParam) {
+          try {
+            userData = JSON.parse(userParam);
+          } catch (userError) {
+            console.error('Error parsing user data:', userError);
+          }
+        }
+        
+        login(token, userData);
+        
+        // Load user wallets if provided
+        if (walletsParam) {
+          try {
+            const walletInfo = JSON.parse(walletsParam);
+            loadUserWallets(walletInfo);
+          } catch (walletError) {
+            console.error('Error parsing wallet info:', walletError);
+          }
+        }
+        
         // Redirect to dashboard after successful login
         setTimeout(() => {
           navigate('/dashboard');
@@ -31,7 +57,7 @@ export const AuthCallback: React.FC = () => {
         navigate('/');
       }, 3000);
     }
-  }, [searchParams, login, navigate]);
+  }, [searchParams, login, loadUserWallets, navigate]);
 
   if (error) {
     return (
@@ -64,7 +90,7 @@ export const AuthCallback: React.FC = () => {
           Signing you in...
         </h2>
         <p className="text-gray-600 font-mulish">
-          Please wait while we complete your authentication.
+          Please wait while we complete your authentication and load your wallets.
         </p>
       </div>
     </div>

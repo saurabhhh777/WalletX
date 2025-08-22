@@ -2,14 +2,19 @@ import mongoose from 'mongoose';
 
 export const connectDB = async (): Promise<void> => {
   try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/walletx';
+    const mongoURI = process.env.MONGODB_URL || 'mongodb://localhost:27017/walletx';
     
     await mongoose.connect(mongoURI);
     
     console.log('✅ MongoDB connected successfully');
   } catch (error) {
     console.error('❌ MongoDB connection error:', error);
-    process.exit(1);
+    console.log('⚠️  Server will continue without database connection');
+    console.log('💡 To fix this:');
+    console.log('   1. Check your MONGODB_URI in .env file');
+    console.log('   2. Ensure your IP is whitelisted in MongoDB Atlas');
+    console.log('   3. Or use a local MongoDB instance');
+    // Don't exit the process, let the server continue
   }
 };
 
