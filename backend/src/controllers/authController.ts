@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../middleware/auth';
-import { User } from '../models/User';
+import { User, IUser } from '../models/User';
 import { EthereumWalletService } from '../services/ethereumWallet';
 import { SolanaWalletService } from '../services/solanaWallet';
 
@@ -54,8 +54,8 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
 
     await user.save();
 
-    // Generate token
-    const token = generateToken(user._id);
+    // Generate token - convert ObjectId to string
+    const token = generateToken(user._id.toString());
 
     res.status(201).json({
       message: 'User created successfully',
@@ -94,15 +94,21 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Check password
+    // Check if user has password (OAuth users might not have one)
+    if (!user.password) {
+      res.status(401).json({ message: 'Invalid email or password' });
+      return;
+    }
+
+    // Check password - user.password is now guaranteed to be a string
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       res.status(401).json({ message: 'Invalid email or password' });
       return;
     }
 
-    // Generate token
-    const token = generateToken(user._id);
+    // Generate token - convert ObjectId to string
+    const token = generateToken(user._id.toString());
 
     res.json({
       message: 'Login successful',
@@ -137,8 +143,8 @@ export const googleAuth = (req: Request, res: Response): void => {
 
 export const googleCallback = (req: Request, res: Response): void => {
   try {
-    const user = req.user as any;
-    const token = generateToken(user._id);
+    const user = req.user as IUser;
+    const token = generateToken(user._id.toString());
     
     // Redirect to frontend with token and wallet info
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
@@ -174,8 +180,8 @@ export const githubAuth = (req: Request, res: Response): void => {
 
 export const githubCallback = (req: Request, res: Response): void => {
   try {
-    const user = req.user as any;
-    const token = generateToken(user._id);
+    const user = req.user as IUser;
+    const token = generateToken(user._id.toString());
     
     // Redirect to frontend with token and wallet info
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';

@@ -5,6 +5,7 @@ import type { EthereumWallet } from '../services/ethereumWallet.ts';
 import { SolanaWalletService } from '../services/solanaWallet.ts';
 import type { SolanaWallet } from '../services/solanaWallet.ts';
 import { useAuth } from './AuthContext';
+import { API_ENDPOINTS, apiCall } from '../config/api';
 
 interface NetworkSettings {
   ethereum: string;
@@ -154,12 +155,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:5000/api/wallets/private', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await apiCall(API_ENDPOINTS.WALLETS_PRIVATE, {}, token);
 
       if (response.ok) {
         const data = await response.json();

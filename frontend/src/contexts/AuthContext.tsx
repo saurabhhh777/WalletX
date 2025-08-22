@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { API_ENDPOINTS, apiCall } from '../config/api';
 
 interface User {
   id: string;
@@ -66,12 +67,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const fetchUserProfile = async (authToken: string) => {
     try {
-      const response = await fetch('http://localhost:5000/api/profile', {
-        headers: {
-          'Authorization': `Bearer ${authToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await apiCall(API_ENDPOINTS.PROFILE, {}, authToken);
 
       if (response.ok) {
         const userData = await response.json();
