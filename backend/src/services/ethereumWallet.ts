@@ -9,7 +9,7 @@ export interface EthereumWallet {
 export class EthereumWalletService {
   private provider: ethers.JsonRpcProvider;
 
-  constructor(rpcUrl: string = 'https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161') {
+  constructor(rpcUrl: string = 'https://eth-sepolia.g.alchemy.com/v2/demo') {
     this.provider = new ethers.JsonRpcProvider(rpcUrl);
   }
 
@@ -19,7 +19,14 @@ export class EthereumWalletService {
       const address = wallet.address;
       const privateKey = wallet.privateKey;
       
-      const balance = await this.getBalance(address);
+      // Try to get balance, but don't fail if API is unavailable
+      let balance = '0';
+      try {
+        balance = await this.getBalance(address);
+      } catch (error) {
+        console.warn('Could not fetch balance, using 0:', error instanceof Error ? error.message : 'Unknown error');
+        balance = '0';
+      }
       
       return {
         address,
@@ -36,7 +43,15 @@ export class EthereumWalletService {
     try {
       const wallet = new ethers.Wallet(privateKey, this.provider);
       const address = wallet.address;
-      const balance = await this.getBalance(address);
+      
+      // Try to get balance, but don't fail if API is unavailable
+      let balance = '0';
+      try {
+        balance = await this.getBalance(address);
+      } catch (error) {
+        console.warn('Could not fetch balance, using 0:', error instanceof Error ? error.message : 'Unknown error');
+        balance = '0';
+      }
       
       return {
         address,
@@ -55,6 +70,7 @@ export class EthereumWalletService {
       return ethers.formatEther(balance);
     } catch (error) {
       console.error('Error fetching balance:', error);
+      // Return 0 instead of throwing, so wallet creation doesn't fail
       return '0';
     }
   }

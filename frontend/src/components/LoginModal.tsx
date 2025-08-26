@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Github, Mail, Lock, User } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -15,11 +16,11 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5000/auth/google';
+    window.location.href = API_ENDPOINTS.GOOGLE_AUTH;
   };
 
   const handleGitHubLogin = () => {
-    window.location.href = 'http://localhost:5000/auth/github';
+    window.location.href = API_ENDPOINTS.GITHUB_AUTH;
   };
 
   const handleEmailAuth = async (e: React.FormEvent) => {
@@ -27,8 +28,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setIsLoading(true);
 
     try {
-      const endpoint = isLogin ? '/auth/login' : '/auth/signup';
-      const response = await fetch(`http://localhost:5000/api${endpoint}`, {
+      const endpoint = isLogin ? API_ENDPOINTS.LOGIN : API_ENDPOINTS.SIGNUP;
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

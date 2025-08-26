@@ -67,12 +67,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const fetchUserProfile = async (authToken: string) => {
     try {
+      console.log('Fetching user profile with token:', authToken.substring(0, 20) + '...');
       const response = await apiCall(API_ENDPOINTS.PROFILE, {}, authToken);
 
       if (response.ok) {
         const userData = await response.json();
+        console.log('User profile fetched successfully:', userData);
         setUser(userData);
       } else {
+        console.error('Profile fetch failed with status:', response.status);
         // Token is invalid, clear it
         localStorage.removeItem('authToken');
         setToken(null);

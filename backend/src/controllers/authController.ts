@@ -34,6 +34,8 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
       password: hashedPassword,
       name,
       provider: 'email',
+      // Default avatar for email users
+      avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`,
       wallets: {
         ethereum: {
           address: ethereumWallet.address,
@@ -64,6 +66,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
         id: user._id,
         email: user.email,
         name: user.name,
+        avatar: user.avatar,
         wallets: {
           ethereum: user.wallets.ethereum ? {
             address: user.wallets.ethereum.address,

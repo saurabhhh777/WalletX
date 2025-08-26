@@ -87,11 +87,14 @@ const UserSchema = new Schema<IUser>({
   timestamps: true,
 });
 
-// Create compound index for provider and providerId (only for OAuth)
-UserSchema.index({ provider: 1, providerId: 1 }, { 
-  unique: true, 
-  sparse: true, // Allow null values for email users
-  partialFilterExpression: { providerId: { $exists: true } }
-});
+// Temporarily comment out the problematic index
+// TODO: Fix this index properly for OAuth users
+// UserSchema.index({ provider: 1, providerId: 1 }, { 
+//   unique: true, 
+//   sparse: true, // Allow null values for email users
+//   partialFilterExpression: { 
+//     providerId: { $exists: true, $ne: null } 
+//   }
+// });
 
 export const User = mongoose.model<IUser>('User', UserSchema); 

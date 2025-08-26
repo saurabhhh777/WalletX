@@ -8,6 +8,7 @@ import { connectDB } from './config/database';
 import { configurePassport } from './config/passport';
 import authRoutes from './routes/auth';
 import walletRoutes from './routes/wallet';
+import { User } from './models/User';
 
 // Load environment variables
 dotenv.config();
@@ -50,6 +51,24 @@ app.use('/api', walletRoutes);
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'WalletX Backend is running' });
+});
+
+// Test database connection
+app.get('/test-db', async (req, res) => {
+  try {
+    const userCount = await User.countDocuments();
+    res.json({ 
+      success: true, 
+      message: 'Database connection working',
+      userCount 
+    });
+  } catch (error) {
+    console.error('Database test error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 });
 
 // Error handling middleware
