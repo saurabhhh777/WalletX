@@ -104,10 +104,31 @@ export class SolanaWalletService {
     amount: string
   ): Promise<string> {
     try {
+      console.log('Solana sendTransaction called with:', {
+        toAddress,
+        amount,
+        hasPrivateKey: !!fromPrivateKeyBase64
+      });
+
       const secretKey = this.base64ToArray(fromPrivateKeyBase64);
       const fromKeypair = Keypair.fromSecretKey(secretKey);
       const toPublicKey = new PublicKey(toAddress);
       const amountLamports = Math.round(parseFloat(amount) * LAMPORTS_PER_SOL);
+
+      console.log('Transaction details:', {
+        from: fromKeypair.publicKey.toString(),
+        to: toPublicKey.toString(),
+        amountLamports,
+        amountSOL: amount
+      });
+
+      // Check if we have enough balance
+      const currentBalance = await this.connection.getBalance(fromKeypair.publicKey);
+      console.log('Current balance:', currentBalance, 'lamports');
+      
+      if (currentBalance < amountLamports) {
+        throw new Error(`Insufficient balance. You have ${(currentBalance / LAMPORTS_PER_SOL).toFixed(9)} SOL, trying to send ${amount} SOL`);
+      }
 
       const tx = new Transaction().add(
         SystemProgram.transfer({
@@ -117,14 +138,22 @@ export class SolanaWalletService {
         })
       );
 
+      console.log('Sending transaction...');
       const signature = await this.connection.sendTransaction(tx, [fromKeypair]);
 
+      console.log('Transaction sent, signature:', signature);
+
       // Wait for confirmation
+      console.log('Waiting for confirmation...');
       await this.connection.confirmTransaction(signature, 'confirmed');
 
+      console.log('Transaction confirmed!');
       return signature;
     } catch (error) {
-      console.error('Error sending Solana transaction:', error);
+      console.error('Solana sendTransaction error:', error);
+      if (error instanceof Error) {
+        throw new Error(`Solana transaction failed: ${error.message}`);
+      }
       throw new Error('Transaction failed. Please try again.');
     }
   }

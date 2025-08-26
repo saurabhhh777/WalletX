@@ -47,13 +47,21 @@ export const SolanaTab: React.FC = () => {
     
     setIsLoading(true);
     try {
+      console.log('Sending Solana transaction:', {
+        to: recipientAddress,
+        amount: amount,
+        from: solanaWallet?.address
+      });
+      
       const signature = await sendSolanaTransaction(recipientAddress, amount);
       toast.success(`Transaction sent successfully! Signature: ${signature.slice(0, 8)}...`);
       setRecipientAddress('');
       setAmount('');
     } catch (err) {
       console.error('Error sending transaction:', err);
-      toast.error('Failed to send transaction. Please check your inputs and try again.');
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      console.error('Detailed error:', errorMessage);
+      toast.error(`Transaction failed: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
