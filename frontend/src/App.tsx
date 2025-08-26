@@ -22,17 +22,23 @@ const AppContent: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Only auto-redirect to dashboard on initial load when user has wallets
-    // Don't redirect if user manually navigated to home
     const hasWallets = ethereumWallet || solanaWallet;
-    const isInitialLoad = location.pathname === '/' && !location.search;
-    
-    if (hasWallets && isInitialLoad) {
+    const manualHome = sessionStorage.getItem('manualHome') === '1';
+    const onHome = location.pathname === '/';
+
+    // Bypass auto-redirect if user explicitly clicked Home
+    if (hasWallets && onHome && !manualHome) {
       navigate('/dashboard');
+    }
+
+    // If we're on Home and manual flag is set, clear it
+    if (onHome && manualHome) {
+      sessionStorage.removeItem('manualHome');
     }
   }, [ethereumWallet, solanaWallet, location.pathname, navigate]);
 
   const handleGoHome = () => {
+    sessionStorage.setItem('manualHome', '1');
     navigate('/');
   };
 
