@@ -4,6 +4,7 @@ import { EthereumTab } from './EthereumTab';
 import { SolanaTab } from './SolanaTab';
 import { SettingsPage } from './SettingsPage';
 import { RefreshCw, Trash2, Home, Settings, Coins } from 'lucide-react';
+import { TransactionHistory } from './TransactionHistory';
 
 interface WalletDashboardProps {
   onGoHome: () => void;
@@ -198,6 +199,9 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
             {activeTab === 'ethereum' ? <EthereumTab /> : <SolanaTab />}
           </div>
         </div>
+
+        {/* History */}
+        <TransactionHistory />
       </main>
     </div>
   );
