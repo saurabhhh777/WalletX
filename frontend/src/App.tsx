@@ -22,7 +22,12 @@ const AppContent: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if ((ethereumWallet || solanaWallet) && location.pathname === '/') {
+    // Only auto-redirect to dashboard on initial load when user has wallets
+    // Don't redirect if user manually navigated to home
+    const hasWallets = ethereumWallet || solanaWallet;
+    const isInitialLoad = location.pathname === '/' && !location.search;
+    
+    if (hasWallets && isInitialLoad) {
       navigate('/dashboard');
     }
   }, [ethereumWallet, solanaWallet, location.pathname, navigate]);
