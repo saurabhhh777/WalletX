@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWallet } from '../contexts/WalletContext';
 import { EthereumTab } from './EthereumTab';
 import { SolanaTab } from './SolanaTab';
@@ -14,6 +14,24 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
   const [activeTab, setActiveTab] = useState<'ethereum' | 'solana'>('ethereum');
   const [showSettings, setShowSettings] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  useEffect(() => {
+    // Initial refresh
+    (async () => {
+      setIsRefreshing(true);
+      await refreshBalances();
+      setIsRefreshing(false);
+    })();
+
+    // Periodic refresh every 15 seconds
+    const id = setInterval(async () => {
+      setIsRefreshing(true);
+      await refreshBalances();
+      setIsRefreshing(false);
+    }, 15000);
+
+    return () => clearInterval(id);
+  }, [refreshBalances]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -100,7 +118,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
               <span className={`px-3 py-1 rounded-full text-xs font-medium font-poppins ${
                 ethereumWallet ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
               }`}>
-                {ethereumWallet ? 'Connected' : 'Not Created'}
+                {ethereumWallet ? 'Connected' : 'Not Connected'}
               </span>
             </div>
             {ethereumWallet && (

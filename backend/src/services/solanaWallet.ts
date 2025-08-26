@@ -1,4 +1,4 @@
-import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, Transaction, SystemProgram } from '@solana/web3.js';
+import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, Transaction, SystemProgram, clusterApiUrl } from '@solana/web3.js';
 
 export interface SolanaWallet {
   address: string;
@@ -10,6 +10,7 @@ export class SolanaWalletService {
   private connection: Connection;
 
   constructor(rpcUrl: string = 'https://api.devnet.solana.com') {
+    // Prefer explicit URL but allow env override in future
     this.connection = new Connection(rpcUrl, 'confirmed');
   }
 
@@ -82,8 +83,15 @@ export class SolanaWalletService {
   async getBalance(address: string): Promise<string> {
     try {
       const publicKey = new PublicKey(address);
-      const balance = await this.connection.getBalance(publicKey);
-      return (balance / LAMPORTS_PER_SOL).toFixed(9);
+      let balanceLamports = await this.connection.getBalance(publicKey);
+
+      // Quick retry once; RPCs can be eventually consistent on devnet
+      if (balanceLamports === 0) {
+        await new Promise(r => setTimeout(r, 1500));
+        balanceLamports = await this.connection.getBalance(publicKey);
+      }
+
+      return (balanceLamports / LAMPORTS_PER_SOL).toFixed(9);
     } catch (error) {
       console.error('Error fetching balance:', error);
       return '0';
@@ -99,58 +107,32 @@ export class SolanaWalletService {
       const secretKey = this.base64ToArray(fromPrivateKeyBase64);
       const fromKeypair = Keypair.fromSecretKey(secretKey);
       const toPublicKey = new PublicKey(toAddress);
-      
-      const amountLamports = Math.floor(parseFloat(amount) * LAMPORTS_PER_SOL);
-      
-      if (amountLamports <= 0) {
-        throw new Error('Amount must be greater than 0');
-      }
-      
-      const transaction = new Transaction().add(
+      const amountLamports = Math.round(parseFloat(amount) * LAMPORTS_PER_SOL);
+
+      const tx = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: fromKeypair.publicKey,
           toPubkey: toPublicKey,
           lamports: amountLamports,
         })
       );
-      
-      const signature = await this.connection.sendTransaction(transaction, [fromKeypair]);
-      await this.connection.confirmTransaction(signature);
+
+      const signature = await this.connection.sendTransaction(tx, [fromKeypair]);
+
+      // Wait for confirmation
+      await this.connection.confirmTransaction(signature, 'confirmed');
+
       return signature;
     } catch (error) {
       console.error('Error sending Solana transaction:', error);
-      throw new Error(`Transaction failed: ${error}`);
+      throw new Error('Transaction failed. Please try again.');
     }
   }
 
-  validateAddress(address: string): boolean {
-    try {
-      new PublicKey(address);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  validatePrivateKey(privateKeyBase64: string): boolean {
-    try {
-      const secretKey = this.base64ToArray(privateKeyBase64);
-      Keypair.fromSecretKey(secretKey);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  async requestAirdrop(address: string, amount: number = 1): Promise<string> {
-    try {
-      const publicKey = new PublicKey(address);
-      const signature = await this.connection.requestAirdrop(publicKey, amount * LAMPORTS_PER_SOL);
-      await this.connection.confirmTransaction(signature);
-      return signature;
-    } catch (error) {
-      console.error('Error requesting Solana airdrop:', error);
-      throw new Error(`Airdrop failed: ${error}`);
-    }
+  requestAirdrop = async (address: string, amount: number = 1): Promise<string> => {
+    const publicKey = new PublicKey(address);
+    const signature = await this.connection.requestAirdrop(publicKey, amount * LAMPORTS_PER_SOL);
+    await this.connection.confirmTransaction(signature, 'confirmed');
+    return signature;
   }
 } 
