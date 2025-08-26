@@ -127,7 +127,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   }
 
   // Load user wallets from authentication response
-  const loadUserWallets = (walletInfo: any) => {
+  const loadUserWallets = async (walletInfo: any) => {
     if (walletInfo.networkSettings) {
       setNetworkSettings(walletInfo.networkSettings);
       // Update services with new network settings
@@ -135,18 +135,55 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       setSolanaService(new SolanaWalletService(getSolanaRpcUrl(walletInfo.networkSettings.solana)));
     }
 
-    if (walletInfo.ethereum) {
-      setEthereumWallet({
-        address: walletInfo.ethereum.address,
-        balance: walletInfo.ethereum.balance || '0'
-      });
-    }
+    // Load wallets with private keys from backend
+    try {
+      const response = await apiCall(API_ENDPOINTS.WALLETS_PRIVATE, {}, token);
 
-    if (walletInfo.solana) {
-      setSolanaWallet({
-        address: walletInfo.solana.address,
-        balance: walletInfo.solana.balance || '0'
-      });
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Update network settings
+        if (data.networkSettings) {
+          setNetworkSettings(data.networkSettings);
+          setEthereumService(new EthereumWalletService(getEthereumRpcUrl(data.networkSettings.ethereum)));
+          setSolanaService(new SolanaWalletService(getSolanaRpcUrl(data.networkSettings.solana)));
+        }
+
+        // Load Ethereum wallet with private key
+        if (data.wallets.ethereum) {
+          setEthereumWallet({
+            address: data.wallets.ethereum.address,
+            privateKey: data.wallets.ethereum.privateKey,
+            balance: data.wallets.ethereum.balance || '0'
+          });
+        }
+
+        // Load Solana wallet with private key
+        if (data.wallets.solana) {
+          setSolanaWallet({
+            address: data.wallets.solana.address,
+            privateKey: data.wallets.solana.privateKey,
+            balance: data.wallets.solana.balance || '0'
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error loading wallets with private keys:', error);
+      
+      // Fallback to loading without private keys
+      if (walletInfo.ethereum) {
+        setEthereumWallet({
+          address: walletInfo.ethereum.address,
+          balance: walletInfo.ethereum.balance || '0'
+        });
+      }
+
+      if (walletInfo.solana) {
+        setSolanaWallet({
+          address: walletInfo.solana.address,
+          balance: walletInfo.solana.balance || '0'
+        });
+      }
     }
   };
 
@@ -342,6 +379,10 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   const sendSolanaTransaction = async (toAddress: string, amount: string) => {
     if (!solanaWallet) {
       throw new Error('No Solana wallet loaded');
+    }
+    
+    if (!solanaWallet.privateKey) {
+      throw new Error('Private key not loaded. Please refresh the page and try again.');
     }
     
     try {

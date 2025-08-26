@@ -2,7 +2,7 @@ import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, Transaction, SystemPr
 
 export interface SolanaWallet {
   address: string;
-  privateKey: string;
+  privateKey?: string;
   balance: string;
 }
 

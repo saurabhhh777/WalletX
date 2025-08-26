@@ -12,61 +12,65 @@ export const AuthCallback: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = searchParams.get('token');
-    const walletsParam = searchParams.get('wallets');
-    const userParam = searchParams.get('user');
+    const handleAuth = async () => {
+      const token = searchParams.get('token');
+      const walletsParam = searchParams.get('wallets');
+      const userParam = searchParams.get('user');
 
-    console.log('AuthCallback - Token:', token ? 'Present' : 'Missing');
-    console.log('AuthCallback - Wallets param:', walletsParam ? 'Present' : 'Missing');
-    console.log('AuthCallback - User param:', userParam ? 'Present' : 'Missing');
+      console.log('AuthCallback - Token:', token ? 'Present' : 'Missing');
+      console.log('AuthCallback - Wallets param:', walletsParam ? 'Present' : 'Missing');
+      console.log('AuthCallback - User param:', userParam ? 'Present' : 'Missing');
 
-    if (token) {
-      try {
-        let userData = null;
-        
-        // Parse user data if provided
-        if (userParam) {
-          try {
-            userData = JSON.parse(userParam);
-            console.log('AuthCallback - Parsed user data:', userData);
-          } catch (userError) {
-            console.error('Error parsing user data:', userError);
+      if (token) {
+        try {
+          let userData = null;
+          
+          // Parse user data if provided
+          if (userParam) {
+            try {
+              userData = JSON.parse(userParam);
+              console.log('AuthCallback - Parsed user data:', userData);
+            } catch (userError) {
+              console.error('Error parsing user data:', userError);
+            }
           }
-        }
-        
-        console.log('AuthCallback - Calling login with token');
-        login(token, userData);
-        
-        // Load user wallets if provided
-        if (walletsParam) {
-          try {
-            const walletInfo = JSON.parse(walletsParam);
-            console.log('AuthCallback - Loading wallets:', walletInfo);
-            loadUserWallets(walletInfo);
-          } catch (walletError) {
-            console.error('Error parsing wallet info:', walletError);
+          
+          console.log('AuthCallback - Calling login with token');
+          login(token, userData);
+          
+          // Load user wallets if provided
+          if (walletsParam) {
+            try {
+              const walletInfo = JSON.parse(walletsParam);
+              console.log('AuthCallback - Loading wallets:', walletInfo);
+              await loadUserWallets(walletInfo);
+            } catch (walletError) {
+              console.error('Error parsing wallet info:', walletError);
+            }
           }
+          
+          // Redirect to dashboard after successful login
+          console.log('AuthCallback - Redirecting to dashboard in 1 second');
+          setTimeout(() => {
+            navigate('/dashboard');
+          }, 1000);
+        } catch (err) {
+          console.error('AuthCallback - Authentication error:', err);
+          setError('Authentication failed. Please try again.');
+          setTimeout(() => {
+            navigate('/');
+          }, 3000);
         }
-        
-        // Redirect to dashboard after successful login
-        console.log('AuthCallback - Redirecting to dashboard in 1 second');
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 1000);
-      } catch (err) {
-        console.error('AuthCallback - Authentication error:', err);
-        setError('Authentication failed. Please try again.');
+      } else {
+        console.error('AuthCallback - No token received');
+        setError('No authentication token received.');
         setTimeout(() => {
           navigate('/');
         }, 3000);
       }
-    } else {
-      console.error('AuthCallback - No token received');
-      setError('No authentication token received.');
-      setTimeout(() => {
-        navigate('/');
-      }, 3000);
-    }
+    };
+
+    handleAuth();
   }, [searchParams, login, loadUserWallets, navigate]);
 
   if (error) {

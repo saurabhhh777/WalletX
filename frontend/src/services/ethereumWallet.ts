@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 
 export interface EthereumWallet {
   address: string;
-  privateKey: string;
+  privateKey?: string;
   balance: string;
 }
 
