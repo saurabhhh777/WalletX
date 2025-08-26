@@ -196,6 +196,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
+        console.log('Backend wallet data received:', data);
         
         // Update network settings
         if (data.networkSettings) {
@@ -206,6 +207,11 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
 
         // Load Ethereum wallet
         if (data.wallets.ethereum) {
+          console.log('Loading Ethereum wallet:', {
+            address: data.wallets.ethereum.address,
+            hasPrivateKey: !!data.wallets.ethereum.privateKey,
+            privateKeyLength: data.wallets.ethereum.privateKey?.length
+          });
           setEthereumWallet({
             address: data.wallets.ethereum.address,
             privateKey: data.wallets.ethereum.privateKey,
@@ -215,6 +221,12 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
 
         // Load Solana wallet
         if (data.wallets.solana) {
+          console.log('Loading Solana wallet:', {
+            address: data.wallets.solana.address,
+            hasPrivateKey: !!data.wallets.solana.privateKey,
+            privateKeyLength: data.wallets.solana.privateKey?.length,
+            privateKeyPreview: data.wallets.solana.privateKey ? data.wallets.solana.privateKey.substring(0, 20) + '...' : 'undefined'
+          });
           setSolanaWallet({
             address: data.wallets.solana.address,
             privateKey: data.wallets.solana.privateKey,
@@ -337,6 +349,10 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       throw new Error('No Ethereum wallet loaded');
     }
     
+    if (!ethereumWallet.privateKey) {
+      throw new Error('Private key not loaded. Please refresh the page and try again.');
+    }
+    
     try {
       const txHash = await ethereumService.sendTransaction(
         ethereumWallet.privateKey,
@@ -381,11 +397,19 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       throw new Error('No Solana wallet loaded');
     }
     
+    console.log('Solana wallet state:', {
+      address: solanaWallet.address,
+      hasPrivateKey: !!solanaWallet.privateKey,
+      privateKeyLength: solanaWallet.privateKey?.length,
+      privateKeyType: typeof solanaWallet.privateKey
+    });
+    
     if (!solanaWallet.privateKey) {
       throw new Error('Private key not loaded. Please refresh the page and try again.');
     }
     
     try {
+      console.log('About to send transaction with private key length:', solanaWallet.privateKey.length);
       const signature = await solanaService.sendTransaction(
         solanaWallet.privateKey,
         toAddress,
