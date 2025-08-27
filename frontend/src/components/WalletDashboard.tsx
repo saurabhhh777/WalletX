@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useWallet } from '../contexts/WalletContext';
+import { useAuth } from '../contexts/AuthContext';
 import { EthereumTab } from './EthereumTab';
 import { SolanaTab } from './SolanaTab';
 import { SettingsPage } from './SettingsPage';
-import { RefreshCw, Trash2, Home, Settings, Coins } from 'lucide-react';
+import { ProfilePage } from './ProfilePage';
+import { RefreshCw, Trash2, Home, Settings, Coins, User } from 'lucide-react';
 import { TransactionHistory } from './TransactionHistory';
 
 interface WalletDashboardProps {
@@ -12,8 +14,10 @@ interface WalletDashboardProps {
 
 export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) => {
   const { ethereumWallet, solanaWallet, refreshBalances, clearWallets, networkSettings, getNetworkDisplayName } = useWallet();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'ethereum' | 'solana'>('ethereum');
   const [showSettings, setShowSettings] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
@@ -51,9 +55,18 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
     setShowSettings(false);
   };
 
+  const handleBackFromProfile = () => {
+    setShowProfile(false);
+  };
+
   // Show settings page if active
   if (showSettings) {
     return <SettingsPage onBack={handleBackFromSettings} />;
+  }
+
+  // Show profile page if active
+  if (showProfile) {
+    return <ProfilePage onBack={handleBackFromProfile} />;
   }
 
   return (
@@ -93,11 +106,21 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                 Home
               </button>
               <button
-                onClick={handleClearWallets}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors flex items-center space-x-2 font-poppins"
+                onClick={() => setShowProfile(true)}
+                className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                title="Profile"
               >
-                <Trash2 className="h-4 w-4" />
-                <span>Clear All</span>
+                {user?.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name}
+                    className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
+                  />
+                ) : (
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <User className="w-4 h-4 text-white" />
+                  </div>
+                )}
               </button>
             </div>
           </div>
