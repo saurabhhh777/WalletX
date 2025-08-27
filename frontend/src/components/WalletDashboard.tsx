@@ -97,8 +97,17 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                 Home
               </button>
               <button
-                onClick={() => navigate('/profile')}
-                className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                onClick={() => {
+                  console.log('Profile button clicked, navigating to /profile');
+                  try {
+                    navigate('/profile');
+                  } catch (error) {
+                    console.error('Navigation error:', error);
+                    // Fallback to window.location
+                    window.location.href = '/profile';
+                  }
+                }}
+                className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                 title="Profile"
               >
                 {user?.avatar ? (
