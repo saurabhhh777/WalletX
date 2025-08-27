@@ -23,29 +23,11 @@ const AppContent: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const hasWallets = ethereumWallet || solanaWallet;
-    const manualHome = sessionStorage.getItem('manualHome') === '1';
-    const onHome = location.pathname === '/';
-
-    // Bypass auto-redirect if user explicitly clicked Home
-    if (hasWallets && onHome && !manualHome) {
-      navigate('/dashboard');
-    }
-
-    // If we're on Home and manual flag is set, clear it
-    if (onHome && manualHome) {
-      sessionStorage.removeItem('manualHome');
-    }
-
-    // Redirect unauthenticated users away from protected routes
-    // Only redirect if we're sure the user is not authenticated and not loading
-    // Temporarily disabled for debugging
-    /*
-    if (!isLoading && !isAuthenticated && location.pathname === '/profile') {
-      console.log('Redirecting unauthenticated user from /profile to /');
-      navigate('/');
-    }
-    */
+    // Temporarily disable all automatic redirects for debugging
+    console.log('App useEffect - Current location:', location.pathname);
+    console.log('App useEffect - Has wallets:', ethereumWallet || solanaWallet);
+    
+    // All automatic redirects disabled for debugging
   }, [ethereumWallet, solanaWallet, location.pathname, navigate, isLoading, isAuthenticated]);
 
   const handleGoHome = () => {

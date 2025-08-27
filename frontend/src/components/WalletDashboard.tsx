@@ -101,6 +101,8 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
               <button
                 onClick={() => {
                   console.log('Home button clicked, navigating to /');
+                  console.log('Current location before navigation:', window.location.pathname);
+                  alert('Home button clicked! Navigating to home page...');
                   window.location.href = '/';
                 }}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors font-poppins"
