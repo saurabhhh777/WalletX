@@ -20,6 +20,14 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
   const [showSettings, setShowSettings] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // Debug logging
+  console.log('WalletDashboard Debug:', {
+    user: user ? 'User exists' : 'No user',
+    userAvatar: user?.avatar,
+    userName: user?.name,
+    navigate: typeof navigate
+  });
+
   useEffect(() => {
     // Initial refresh
     (async () => {
@@ -99,6 +107,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
               <button
                 onClick={() => {
                   console.log('Profile button clicked, navigating to /profile');
+                  alert('Profile button clicked!'); // Temporary alert to test if click works
                   try {
                     navigate('/profile');
                   } catch (error) {
@@ -107,8 +116,9 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                     window.location.href = '/profile';
                   }
                 }}
-                className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer z-10"
                 title="Profile"
+                style={{ position: 'relative', zIndex: 10 }}
               >
                 {user?.avatar ? (
                   <img
@@ -121,6 +131,16 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                     <User className="w-4 h-4 text-white" />
                   </div>
                 )}
+              </button>
+              {/* Test button */}
+              <button
+                onClick={() => {
+                  alert('Test button works!');
+                  navigate('/');
+                }}
+                className="bg-red-500 text-white px-2 py-1 rounded text-xs ml-2"
+              >
+                Test
               </button>
             </div>
           </div>
