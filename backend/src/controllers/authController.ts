@@ -149,8 +149,16 @@ export const googleCallback = (req: Request, res: Response): void => {
     const user = req.user as IUser;
     const token = generateToken(user._id.toString());
     
-    // Redirect to frontend with token and wallet info
+    // Redirect to frontend with token, user data, and wallet info
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const userData = {
+      id: user._id,
+      email: user.email,
+      name: user.name,
+      avatar: user.avatar,
+      provider: user.provider,
+      createdAt: user.createdAt
+    };
     const walletInfo = {
       ethereum: user.wallets.ethereum ? {
         address: user.wallets.ethereum.address,
@@ -165,10 +173,12 @@ export const googleCallback = (req: Request, res: Response): void => {
     
     const queryParams = new URLSearchParams({
       token,
+      user: JSON.stringify(userData),
       provider: 'google',
       wallets: JSON.stringify(walletInfo)
     });
     
+    console.log('Google callback - Redirecting with user data:', userData);
     res.redirect(`${frontendUrl}/auth-callback?${queryParams.toString()}`);
   } catch (error) {
     console.error('Google callback error:', error);
@@ -186,8 +196,16 @@ export const githubCallback = (req: Request, res: Response): void => {
     const user = req.user as IUser;
     const token = generateToken(user._id.toString());
     
-    // Redirect to frontend with token and wallet info
+    // Redirect to frontend with token, user data, and wallet info
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const userData = {
+      id: user._id,
+      email: user.email,
+      name: user.name,
+      avatar: user.avatar,
+      provider: user.provider,
+      createdAt: user.createdAt
+    };
     const walletInfo = {
       ethereum: user.wallets.ethereum ? {
         address: user.wallets.ethereum.address,
@@ -202,10 +220,12 @@ export const githubCallback = (req: Request, res: Response): void => {
     
     const queryParams = new URLSearchParams({
       token,
+      user: JSON.stringify(userData),
       provider: 'github',
       wallets: JSON.stringify(walletInfo)
     });
     
+    console.log('GitHub callback - Redirecting with user data:', userData);
     res.redirect(`${frontendUrl}/auth-callback?${queryParams.toString()}`);
   } catch (error) {
     console.error('GitHub callback error:', error);

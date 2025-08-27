@@ -90,12 +90,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const login = (authToken: string, userData?: User) => {
+    console.log('AuthContext - Login called with token:', authToken.substring(0, 20) + '...');
+    console.log('AuthContext - User data provided:', userData ? 'Yes' : 'No');
+    console.log('AuthContext - User data:', userData);
+    
     setToken(authToken);
     localStorage.setItem('authToken', authToken);
     
     if (userData) {
+      console.log('AuthContext - Setting user data directly');
       setUser(userData);
     } else {
+      console.log('AuthContext - Fetching user profile from API');
       fetchUserProfile(authToken);
     }
   };
