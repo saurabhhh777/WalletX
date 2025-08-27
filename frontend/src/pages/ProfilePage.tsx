@@ -29,12 +29,20 @@ interface ProfilePageProps {
 }
 
 export const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading, isAuthenticated } = useAuth();
   const { ethereumWallet, solanaWallet, clearWallets } = useWallet();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+
+  // Debug logging
+  console.log('ProfilePage Debug:', {
+    isLoading,
+    isAuthenticated,
+    user: user ? 'User exists' : 'No user',
+    token: localStorage.getItem('authToken') ? 'Token exists' : 'No token'
+  });
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout? This will clear all your wallet data.')) {
@@ -62,21 +70,42 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
     }
   };
 
-  if (!user) {
+  // Show loading screen while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-poppins flex items-center justify-center">
+        <div className="bg-white rounded-2xl p-8 shadow-lg">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 text-center">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login prompt if not authenticated
+  if (!isAuthenticated || !user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-poppins">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <div className="bg-white rounded-2xl p-8 shadow-lg">
               <User className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">User Not Found</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Authentication Required</h2>
               <p className="text-gray-600 mb-6">Please log in to view your profile.</p>
-              <button
-                onClick={() => navigate('/')}
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-              >
-                Go to Home
-              </button>
+              <div className="space-y-3">
+                <button
+                  onClick={() => navigate('/')}
+                  className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full"
+                >
+                  Go to Home & Login
+                </button>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors w-full"
+                >
+                  Refresh Page
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -18,7 +18,7 @@ import { Footer } from './components/Footer';
 
 const AppContent: React.FC = () => {
   const { ethereumWallet, solanaWallet } = useWallet();
-  const { isLoading } = useAuth();
+  const { isLoading, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -36,7 +36,12 @@ const AppContent: React.FC = () => {
     if (onHome && manualHome) {
       sessionStorage.removeItem('manualHome');
     }
-  }, [ethereumWallet, solanaWallet, location.pathname, navigate]);
+
+    // Redirect unauthenticated users away from protected routes
+    if (!isLoading && !isAuthenticated && location.pathname === '/profile') {
+      navigate('/');
+    }
+  }, [ethereumWallet, solanaWallet, location.pathname, navigate, isLoading, isAuthenticated]);
 
   const handleGoHome = () => {
     sessionStorage.setItem('manualHome', '1');
