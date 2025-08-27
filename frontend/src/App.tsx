@@ -39,10 +39,13 @@ const AppContent: React.FC = () => {
 
     // Redirect unauthenticated users away from protected routes
     // Only redirect if we're sure the user is not authenticated and not loading
+    // Temporarily disabled for debugging
+    /*
     if (!isLoading && !isAuthenticated && location.pathname === '/profile') {
       console.log('Redirecting unauthenticated user from /profile to /');
       navigate('/');
     }
+    */
   }, [ethereumWallet, solanaWallet, location.pathname, navigate, isLoading, isAuthenticated]);
 
   const handleGoHome = () => {
