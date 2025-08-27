@@ -1,14 +1,12 @@
 import React from 'react';
 import { Sun, Moon } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
+import { useThemeStore } from '../stores/themeStore';
 
 export const DarkModeToggle: React.FC = () => {
-  const { isDarkMode, toggleDarkMode } = useTheme();
+  const { isDarkMode, toggleDarkMode } = useThemeStore();
 
   const handleToggle = () => {
-    console.log('Dark mode toggle clicked, current state:', isDarkMode);
     toggleDarkMode();
-    console.log('Dark mode toggled to:', !isDarkMode);
   };
 
   return (

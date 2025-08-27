@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocat
 import { Toaster } from 'react-hot-toast';
 import { WalletProvider, useWallet } from './contexts/WalletContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { ThemeProvider } from './contexts/ThemeContext';
 import { HomePage } from './components/HomePage';
 import { WalletDashboard } from './components/WalletDashboard';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
@@ -17,12 +16,16 @@ import { ProfilePage } from './pages/ProfilePage';
 import { AuthCallback } from './components/AuthCallback';
 import { Footer } from './components/Footer';
 import { DarkModeToggle } from './components/DarkModeToggle';
+import { useThemeInit } from './hooks/useThemeInit';
 
 const AppContent: React.FC = () => {
   const { ethereumWallet, solanaWallet } = useWallet();
   const { isLoading, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // Initialize theme
+  useThemeInit();
 
   useEffect(() => {
     // Temporarily disable all automatic redirects for debugging
@@ -80,22 +83,20 @@ const AppContent: React.FC = () => {
 function App() {
   return (
     <Router>
-      <ThemeProvider>
-        <AuthProvider>
-          <WalletProvider>
-            <AppContent />
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                duration: 4000,
-                style: { background: '#363636', color: '#fff' },
-                success: { duration: 3000, iconTheme: { primary: '#4ade80', secondary: '#fff' } },
-                error: { duration: 5000, iconTheme: { primary: '#ef4444', secondary: '#fff' } },
-              }}
-            />
-          </WalletProvider>
-        </AuthProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <WalletProvider>
+          <AppContent />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: { background: '#363636', color: '#fff' },
+              success: { duration: 3000, iconTheme: { primary: '#4ade80', secondary: '#fff' } },
+              error: { duration: 5000, iconTheme: { primary: '#ef4444', secondary: '#fff' } },
+            }}
+          />
+        </WalletProvider>
+      </AuthProvider>
     </Router>
   );
 }
