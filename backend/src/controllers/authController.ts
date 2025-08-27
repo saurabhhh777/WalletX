@@ -242,4 +242,109 @@ export const logout = (req: Request, res: Response): void => {
     }
     res.json({ message: 'Logged out successfully' });
   });
+};
+
+// Account linking functions
+export const linkGoogleAccount = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user = req.user as IUser;
+    const currentUser = await User.findById(req.headers['user-id'] as string);
+    
+    if (!currentUser) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    // Check if Google account is already linked
+    if (currentUser.linkedProviders?.google) {
+      res.status(400).json({ message: 'Google account is already linked' });
+      return;
+    }
+
+    // Link the Google account
+    currentUser.linkedProviders = currentUser.linkedProviders || {};
+    currentUser.linkedProviders.google = {
+      providerId: user.providerId!,
+      linkedAt: new Date()
+    };
+
+    await currentUser.save();
+
+    // Redirect to frontend with success message
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    res.redirect(`${frontendUrl}/profile?linkSuccess=google`);
+  } catch (error) {
+    console.error('Link Google account error:', error);
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    res.redirect(`${frontendUrl}/profile?linkError=google`);
+  }
+};
+
+export const linkGitHubAccount = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user = req.user as IUser;
+    const currentUser = await User.findById(req.headers['user-id'] as string);
+    
+    if (!currentUser) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    // Check if GitHub account is already linked
+    if (currentUser.linkedProviders?.github) {
+      res.status(400).json({ message: 'GitHub account is already linked' });
+      return;
+    }
+
+    // Link the GitHub account
+    currentUser.linkedProviders = currentUser.linkedProviders || {};
+    currentUser.linkedProviders.github = {
+      providerId: user.providerId!,
+      linkedAt: new Date()
+    };
+
+    await currentUser.save();
+
+    // Redirect to frontend with success message
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    res.redirect(`${frontendUrl}/profile?linkSuccess=github`);
+  } catch (error) {
+    console.error('Link GitHub account error:', error);
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    res.redirect(`${frontendUrl}/profile?linkError=github`);
+  }
+};
+
+export const unlinkProvider = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { provider } = req.params;
+    const userId = req.headers['user-id'] as string;
+    
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    // Check if user has at least one other provider linked
+    const linkedProviders = Object.keys(user.linkedProviders || {}).filter(key => 
+      user.linkedProviders![key as keyof typeof user.linkedProviders] && key !== provider
+    );
+
+    if (linkedProviders.length === 0) {
+      res.status(400).json({ message: 'Cannot unlink the only provider. Please link another account first.' });
+      return;
+    }
+
+    // Unlink the provider
+    if (user.linkedProviders && user.linkedProviders[provider as keyof typeof user.linkedProviders]) {
+      delete user.linkedProviders[provider as keyof typeof user.linkedProviders];
+      await user.save();
+    }
+
+    res.json({ message: `${provider} account unlinked successfully` });
+  } catch (error) {
+    console.error('Unlink provider error:', error);
+    res.status(500).json({ message: 'Failed to unlink account' });
+  }
 }; 

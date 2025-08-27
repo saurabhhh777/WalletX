@@ -8,6 +8,16 @@ export interface IUser extends Document {
   avatar?: string;
   provider: 'google' | 'github' | 'email';
   providerId?: string; // Optional for email users
+  linkedProviders: {
+    google?: {
+      providerId: string;
+      linkedAt: Date;
+    };
+    github?: {
+      providerId: string;
+      linkedAt: Date;
+    };
+  };
   wallets: {
     ethereum?: {
       address: string;
@@ -59,6 +69,22 @@ const UserSchema = new Schema<IUser>({
     // Required only for OAuth providers
     required: function() {
       return this.provider !== 'email';
+    },
+  },
+  linkedProviders: {
+    google: {
+      providerId: String,
+      linkedAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+    github: {
+      providerId: String,
+      linkedAt: {
+        type: Date,
+        default: Date.now,
+      },
     },
   },
   wallets: {

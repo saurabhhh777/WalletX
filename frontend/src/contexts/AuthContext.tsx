@@ -8,6 +8,16 @@ interface User {
   name: string;
   avatar?: string;
   provider: 'google' | 'github' | 'email';
+  linkedProviders?: {
+    google?: {
+      providerId: string;
+      linkedAt: string;
+    };
+    github?: {
+      providerId: string;
+      linkedAt: string;
+    };
+  };
   wallets?: {
     ethereum?: {
       address: string;

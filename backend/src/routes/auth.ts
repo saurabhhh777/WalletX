@@ -7,7 +7,10 @@ import {
   githubCallback, 
   logout,
   login,
-  signup
+  signup,
+  linkGoogleAccount,
+  linkGitHubAccount,
+  unlinkProvider
 } from '../controllers/authController';
 
 const router = express.Router();
@@ -26,5 +29,12 @@ router.get('/github/callback', passport.authenticate('github', { session: false 
 
 // Logout route
 router.post('/logout', logout);
+
+// Account linking routes
+router.get('/link/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/link/google/callback', passport.authenticate('google', { session: false }), linkGoogleAccount);
+router.get('/link/github', passport.authenticate('github', { scope: ['user:email'] }));
+router.get('/link/github/callback', passport.authenticate('github', { session: false }), linkGitHubAccount);
+router.post('/unlink/:provider', unlinkProvider);
 
 export default router; 

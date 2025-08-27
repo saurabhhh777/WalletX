@@ -24,6 +24,11 @@ export const API_ENDPOINTS = {
   GITHUB_AUTH: `${API_BASE_URL}/auth/github`,
   LOGOUT: `${API_BASE_URL}/auth/logout`,
   
+  // Account linking endpoints
+  LINK_GOOGLE: `${API_BASE_URL}/auth/link/google`,
+  LINK_GITHUB: `${API_BASE_URL}/auth/link/github`,
+  UNLINK_PROVIDER: `${API_BASE_URL}/auth/unlink`,
+  
   // Wallet endpoints
   WALLETS_PRIVATE: `${API_BASE_URL}/api/wallets/private`,
   WALLETS_BALANCE: `${API_BASE_URL}/api/wallets/balance`,
