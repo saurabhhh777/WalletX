@@ -99,7 +99,10 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                 <span>Settings</span>
               </button>
               <button
-                onClick={onGoHome}
+                onClick={() => {
+                  console.log('Home button clicked, navigating to /');
+                  window.location.href = '/';
+                }}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors font-poppins"
               >
                 Home
@@ -107,11 +110,6 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
               <button
                 onClick={() => {
                   console.log('Profile button clicked, navigating to /profile');
-                  console.log('Current navigate function:', navigate);
-                  console.log('Current location:', window.location.pathname);
-                  
-                  // Force navigation using window.location.href
-                  console.log('Using window.location.href to navigate');
                   window.location.href = '/profile';
                 }}
                 className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer z-10"
