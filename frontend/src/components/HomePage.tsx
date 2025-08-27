@@ -128,14 +128,20 @@ export const HomePage: React.FC = () => {
           {isAuthenticated ? (
             <>
               <button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => {
+                  console.log('Dashboard button clicked, navigating to /dashboard');
+                  window.location.href = '/dashboard';
+                }}
                 className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
               >
                 <Wallet className="w-5 h-5" />
                 <span>Go to Dashboard</span>
               </button>
               <button
-                onClick={() => navigate('/profile')}
+                onClick={() => {
+                  console.log('Profile button clicked, navigating to /profile');
+                  window.location.href = '/profile';
+                }}
                 className="bg-white text-gray-700 px-8 py-4 rounded-lg font-semibold text-lg border border-gray-300 hover:bg-gray-50 transition-colors flex items-center space-x-2"
               >
                 <User className="w-5 h-5" />
