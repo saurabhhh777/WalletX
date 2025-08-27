@@ -24,91 +24,25 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     // Check localStorage for saved preference
     const saved = localStorage.getItem('darkMode');
     if (saved !== null) {
-      const parsed = JSON.parse(saved);
-      console.log('ThemeContext: Initial state from localStorage:', parsed);
-      return parsed;
+      return JSON.parse(saved);
     }
     // Check system preference
-    const systemPref = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    console.log('ThemeContext: Initial state from system preference:', systemPref);
-    return systemPref;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
-  // Apply initial theme immediately
   useEffect(() => {
-    console.log('ThemeContext: Applying initial theme, isDarkMode:', isDarkMode);
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      document.body.classList.add('dark');
-      document.documentElement.style.setProperty('--bg-primary', '#111827');
-      document.documentElement.style.setProperty('--bg-secondary', '#1f2937');
-      document.documentElement.style.setProperty('--text-primary', '#ffffff');
-      document.documentElement.style.setProperty('--text-secondary', '#d1d5db');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.body.classList.remove('dark');
-      document.documentElement.style.setProperty('--bg-primary', '#f8fafc');
-      document.documentElement.style.setProperty('--bg-secondary', '#ffffff');
-      document.documentElement.style.setProperty('--text-primary', '#1e293b');
-      document.documentElement.style.setProperty('--text-secondary', '#475569');
-    }
-    
-    // Force a repaint to ensure styles are applied
-    document.body.offsetHeight;
-  }, []);
-
-  useEffect(() => {
-    console.log('ThemeContext: useEffect triggered, isDarkMode:', isDarkMode);
     // Save preference to localStorage
     localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
     
-    // Apply dark mode class to document
+    // Apply dark mode class to document (this is the only document manipulation needed)
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
-      document.body.classList.add('dark');
-      // Also set CSS custom properties for immediate effect
-      document.documentElement.style.setProperty('--bg-primary', '#111827');
-      document.documentElement.style.setProperty('--bg-secondary', '#1f2937');
-      document.documentElement.style.setProperty('--text-primary', '#ffffff');
-      document.documentElement.style.setProperty('--text-secondary', '#d1d5db');
-      console.log('ThemeContext: Added dark class to document and body');
-      console.log('ThemeContext: Current classes on html:', document.documentElement.className);
-      console.log('ThemeContext: Current classes on body:', document.body.className);
     } else {
       document.documentElement.classList.remove('dark');
-      document.body.classList.remove('dark');
-      // Reset CSS custom properties
-      document.documentElement.style.setProperty('--bg-primary', '#f8fafc');
-      document.documentElement.style.setProperty('--bg-secondary', '#ffffff');
-      document.documentElement.style.setProperty('--text-primary', '#1e293b');
-      document.documentElement.style.setProperty('--text-secondary', '#475569');
-      console.log('ThemeContext: Removed dark class from document and body');
-      console.log('ThemeContext: Current classes on html:', document.documentElement.className);
-      console.log('ThemeContext: Current classes on body:', document.body.className);
     }
-    
-    // Force a re-render by dispatching a custom event
-    window.dispatchEvent(new Event('darkModeChange'));
   }, [isDarkMode]);
 
-  // Apply initial theme on mount
-  useEffect(() => {
-    console.log('ThemeContext: Initial theme application, isDarkMode:', isDarkMode);
-    if (isDarkMode) {
-      document.documentElement.style.setProperty('--bg-primary', '#111827');
-      document.documentElement.style.setProperty('--bg-secondary', '#1f2937');
-      document.documentElement.style.setProperty('--text-primary', '#ffffff');
-      document.documentElement.style.setProperty('--text-secondary', '#d1d5db');
-    } else {
-      document.documentElement.style.setProperty('--bg-primary', '#f8fafc');
-      document.documentElement.style.setProperty('--bg-secondary', '#ffffff');
-      document.documentElement.style.setProperty('--text-primary', '#1e293b');
-      document.documentElement.style.setProperty('--text-secondary', '#475569');
-    }
-  }, []);
-
   const toggleDarkMode = () => {
-    console.log('ThemeContext: Toggling dark mode from', isDarkMode, 'to', !isDarkMode);
     setIsDarkMode(!isDarkMode);
   };
 

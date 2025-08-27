@@ -70,9 +70,9 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
   }
 
   return (
-    <div className="min-h-screen font-poppins transition-colors duration-200" style={{ backgroundColor: 'var(--bg-primary)' }}>
+    <div className="min-h-screen bg-white dark:bg-gray-900 font-poppins transition-colors duration-200">
       {/* Header */}
-      <header className="border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 transition-colors duration-200" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-4">
@@ -80,7 +80,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                 <Home className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold font-jost" style={{ color: 'var(--text-primary)' }}>WalletX Dashboard</h1>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white font-jost">WalletX Dashboard</h1>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -88,27 +88,20 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
-                className="px-4 py-2 rounded-lg font-medium hover:opacity-80 transition-colors flex items-center space-x-2 font-poppins"
-                style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
+                className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2 font-poppins"
               >
                 <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                 <span>Refresh</span>
               </button>
               <button
                 onClick={() => setShowSettings(true)}
-                className="px-4 py-2 rounded-lg font-medium hover:opacity-80 transition-colors flex items-center space-x-2 font-poppins"
-                style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
+                className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2 font-poppins"
               >
                 <Settings className="h-4 w-4" />
                 <span>Settings</span>
               </button>
               <button
-                onClick={() => {
-                  console.log('Home button clicked, navigating to /');
-                  console.log('Current location before navigation:', window.location.pathname);
-                  alert('Home button clicked! Navigating to home page...');
-                  window.location.href = '/';
-                }}
+                onClick={() => window.location.href = '/'}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors font-poppins"
               >
                 Home
@@ -141,64 +134,64 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Wallet Status */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
-                <div className="bg-blue-100 p-2 rounded-lg">
+                <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
                   {/* Ethereum Symbol */}
-                  <svg className="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 font-jost">Ethereum Wallet</h3>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white font-jost">Ethereum Wallet</h3>
               </div>
               <span className={`px-3 py-1 rounded-full text-xs font-medium font-poppins ${
-                ethereumWallet ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+                ethereumWallet ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
               }`}>
                 {ethereumWallet ? 'Connected' : 'Not Connected'}
               </span>
             </div>
             {ethereumWallet && (
               <div className="space-y-2 font-mulish">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   <span className="font-medium">Network:</span> {getNetworkDisplayName('ethereum', networkSettings.ethereum)}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   <span className="font-medium">Address:</span> {ethereumWallet.address.slice(0, 6)}...{ethereumWallet.address.slice(-4)}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   <span className="font-medium">Balance:</span> {ethereumWallet.balance} ETH
                 </p>
               </div>
             )}
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-xl p-6">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
-                <div className="bg-purple-100 p-2 rounded-lg">
+                <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded-lg">
                   {/* Solana Symbol */}
-                  <svg className="w-6 h-6 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M13.719 0H0v13.719h13.719V0zM24 10.281H10.281V24H24V10.281z"/>
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 font-jost">Solana Wallet</h3>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white font-jost">Solana Wallet</h3>
               </div>
               <span className={`px-3 py-1 rounded-full text-xs font-medium font-poppins ${
-                solanaWallet ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+                solanaWallet ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
               }`}>
                 {solanaWallet ? 'Connected' : 'Not Created'}
               </span>
             </div>
             {solanaWallet && (
               <div className="space-y-2 font-mulish">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   <span className="font-medium">Network:</span> {getNetworkDisplayName('solana', networkSettings.solana)}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   <span className="font-medium">Address:</span> {solanaWallet.address.slice(0, 6)}...{solanaWallet.address.slice(-4)}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   <span className="font-medium">Balance:</span> {solanaWallet.balance} SOL
                 </p>
               </div>

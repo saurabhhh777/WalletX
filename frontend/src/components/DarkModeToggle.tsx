@@ -14,19 +14,14 @@ export const DarkModeToggle: React.FC = () => {
   return (
     <button
       onClick={handleToggle}
-      className="p-2 rounded-lg border transition-all duration-200 group hover:opacity-80"
-      style={{ 
-        backgroundColor: 'var(--bg-secondary)', 
-        borderColor: 'var(--text-secondary)',
-        color: 'var(--text-primary)'
-      }}
+      className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 group"
       aria-label="Toggle dark mode"
       title={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
     >
       {isDarkMode ? (
         <Sun className="w-4 h-4 text-yellow-500 group-hover:rotate-90 transition-transform duration-200" />
       ) : (
-        <Moon className="w-4 h-4 group-hover:rotate-12 transition-transform duration-200" style={{ color: 'var(--text-primary)' }} />
+        <Moon className="w-4 h-4 text-gray-600 dark:text-gray-400 group-hover:rotate-12 transition-transform duration-200" />
       )}
     </button>
   );

@@ -1,12 +1,5 @@
 @import "tailwindcss";
 
-:root {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
-}
-
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -14,72 +7,5 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bg-primary) !important;
-  color: var(--text-primary) !important;
   transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Force dark mode styles */
-.dark {
-  --bg-primary: #111827 !important;
-  --bg-secondary: #1f2937 !important;
-  --text-primary: #ffffff !important;
-  --text-secondary: #d1d5db !important;
-}
-
-/* Force light mode styles */
-:not(.dark) {
-  --bg-primary: #f8fafc !important;
-  --bg-secondary: #ffffff !important;
-  --text-primary: #1e293b !important;
-  --text-secondary: #475569 !important;
-}
-
-/* Ensure text is always visible */
-* {
-  color: var(--text-primary);
-}
-
-/* Specific text color overrides */
-.text-primary {
-  color: var(--text-primary) !important;
-}
-
-.text-secondary {
-  color: var(--text-secondary) !important;
-}
-
-/* Ensure headings are visible */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--text-primary) !important;
-}
-
-/* Ensure paragraphs are visible */
-p {
-  color: var(--text-secondary) !important;
-}
-
-/* Light mode specific enhancements */
-:not(.dark) {
-  /* Add subtle shadows for depth */
-  .shadow-sm {
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-  }
-  
-  .shadow {
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
-  }
-  
-  .shadow-lg {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-  }
-  
-  /* Better border colors */
-  .border-gray-200 {
-    border-color: #e2e8f0 !important;
-  }
-  
-  .border-gray-300 {
-    border-color: #cbd5e1 !important;
-  }
 }
