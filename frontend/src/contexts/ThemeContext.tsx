@@ -34,6 +34,29 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     return systemPref;
   });
 
+  // Apply initial theme immediately
+  useEffect(() => {
+    console.log('ThemeContext: Applying initial theme, isDarkMode:', isDarkMode);
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
+      document.documentElement.style.setProperty('--bg-primary', '#111827');
+      document.documentElement.style.setProperty('--bg-secondary', '#1f2937');
+      document.documentElement.style.setProperty('--text-primary', '#ffffff');
+      document.documentElement.style.setProperty('--text-secondary', '#d1d5db');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
+      document.documentElement.style.setProperty('--bg-primary', '#ffffff');
+      document.documentElement.style.setProperty('--bg-secondary', '#f9fafb');
+      document.documentElement.style.setProperty('--text-primary', '#111827');
+      document.documentElement.style.setProperty('--text-secondary', '#6b7280');
+    }
+    
+    // Force a repaint to ensure styles are applied
+    document.body.offsetHeight;
+  }, []);
+
   useEffect(() => {
     console.log('ThemeContext: useEffect triggered, isDarkMode:', isDarkMode);
     // Save preference to localStorage
@@ -67,6 +90,22 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     // Force a re-render by dispatching a custom event
     window.dispatchEvent(new Event('darkModeChange'));
   }, [isDarkMode]);
+
+  // Apply initial theme on mount
+  useEffect(() => {
+    console.log('ThemeContext: Initial theme application, isDarkMode:', isDarkMode);
+    if (isDarkMode) {
+      document.documentElement.style.setProperty('--bg-primary', '#111827');
+      document.documentElement.style.setProperty('--bg-secondary', '#1f2937');
+      document.documentElement.style.setProperty('--text-primary', '#ffffff');
+      document.documentElement.style.setProperty('--text-secondary', '#d1d5db');
+    } else {
+      document.documentElement.style.setProperty('--bg-primary', '#ffffff');
+      document.documentElement.style.setProperty('--bg-secondary', '#f9fafb');
+      document.documentElement.style.setProperty('--text-primary', '#111827');
+      document.documentElement.style.setProperty('--text-secondary', '#6b7280');
+    }
+  }, []);
 
   const toggleDarkMode = () => {
     console.log('ThemeContext: Toggling dark mode from', isDarkMode, 'to', !isDarkMode);

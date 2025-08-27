@@ -80,7 +80,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                 <Home className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white font-jost">WalletX Dashboard</h1>
+                <h1 className="text-2xl font-bold font-jost" style={{ color: 'var(--text-primary)' }}>WalletX Dashboard</h1>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -88,14 +88,16 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
-                className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2 font-poppins"
+                className="px-4 py-2 rounded-lg font-medium hover:opacity-80 transition-colors flex items-center space-x-2 font-poppins"
+                style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
               >
                 <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                 <span>Refresh</span>
               </button>
               <button
                 onClick={() => setShowSettings(true)}
-                className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2 font-poppins"
+                className="px-4 py-2 rounded-lg font-medium hover:opacity-80 transition-colors flex items-center space-x-2 font-poppins"
+                style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
               >
                 <Settings className="h-4 w-4" />
                 <span>Settings</span>

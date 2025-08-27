@@ -42,14 +42,14 @@ export const HomePage: React.FC = () => {
               <div className="bg-blue-600 p-2 rounded-lg">
                 <Wallet className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">WalletX</h1>
+              <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>WalletX</h1>
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Features</a>
-              <a href="#security" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Security</a>
-              <a href="#compare" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Compare</a>
-              <a href="#pricing" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Pricing</a>
+              <a href="#features" className="hover:opacity-80 transition-colors" style={{ color: 'var(--text-secondary)' }}>Features</a>
+              <a href="#security" className="hover:opacity-80 transition-colors" style={{ color: 'var(--text-secondary)' }}>Security</a>
+              <a href="#compare" className="hover:opacity-80 transition-colors" style={{ color: 'var(--text-secondary)' }}>Compare</a>
+              <a href="#pricing" className="hover:opacity-80 transition-colors" style={{ color: 'var(--text-secondary)' }}>Pricing</a>
             </div>
             
             {isAuthenticated ? (
@@ -67,13 +67,14 @@ export const HomePage: React.FC = () => {
                       <User className="w-4 h-4 text-white" />
                     </div>
                   )}
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
                     {user?.name}
                   </span>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+                  className="hover:opacity-80 transition-colors"
+                  style={{ color: 'var(--text-secondary)' }}
                   title="Logout"
                 >
                   <LogOut className="w-5 h-5" />
@@ -107,21 +108,21 @@ export const HomePage: React.FC = () => {
         <div className="text-center mb-16">
           {isAuthenticated ? (
             <>
-                        <h2 className="text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                        <h2 className="text-5xl font-bold mb-6 text-primary">
             Welcome back,{' '}
             <span className="text-teal-500">{user?.name || 'User'}</span>
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-                Your secure digital assets are ready. Access your dashboard to manage wallets, track transactions, and monitor your crypto portfolio.
-              </p>
+                    <p className="text-xl mb-8 max-w-3xl mx-auto text-secondary">
+            Your secure digital assets are ready. Access your dashboard to manage wallets, track transactions, and monitor your crypto portfolio.
+          </p>
             </>
           ) : (
             <>
-              <h2 className="text-5xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-5xl font-bold mb-6 text-primary">
                 A wallet system that works like a{' '}
                 <span className="text-teal-500">Professional</span>
               </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+              <p className="text-xl mb-8 max-w-3xl mx-auto text-secondary">
                 Secure digital assets deserve a system that does it all, from creating wallets and smooth transactions to helping you manage and track your crypto portfolio.
               </p>
             </>

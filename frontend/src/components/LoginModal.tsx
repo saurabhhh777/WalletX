@@ -79,10 +79,10 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white font-jost mb-2">
+          <h2 className="text-2xl font-bold font-jost mb-2" style={{ color: 'var(--text-primary)' }}>
             {isLogin ? 'Welcome Back' : 'Create Your Account'}
           </h2>
-          <p className="text-gray-600 dark:text-gray-300 font-mulish">
+          <p className="font-mulish" style={{ color: 'var(--text-secondary)' }}>
             {isLogin 
               ? 'Sign in with your social account to access your wallets'
               : 'Sign up with your social account to create your first wallet'
@@ -189,7 +189,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
         {/* Toggle between login and signup */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400 font-mulish">
+          <p className="text-sm font-mulish" style={{ color: 'var(--text-secondary)' }}>
             {isLogin ? "Don't have an account? " : "Already have an account? "}
             <button
               onClick={() => {
@@ -207,7 +207,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400 font-mulish">
+          <p className="text-sm font-mulish" style={{ color: 'var(--text-secondary)' }}>
             By {isLogin ? 'signing in' : 'signing up'}, you agree to our{' '}
             <a href="/terms" className="text-blue-600 hover:underline">
               Terms of Service
