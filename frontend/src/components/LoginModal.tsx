@@ -84,14 +84,14 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           </h2>
           <p className="text-gray-600 font-mulish">
             {isLogin 
-              ? 'Sign in to access your wallets and settings'
-              : 'Sign up to create your first wallet'
+              ? 'Sign in with your social account to access your wallets'
+              : 'Sign up with your social account to create your first wallet'
             }
           </p>
         </div>
 
-        {/* Email/Password Form */}
-        <form onSubmit={handleEmailAuth} className="space-y-4 mb-6">
+        {/* Email/Password Form - Hidden */}
+        {/* <form onSubmit={handleEmailAuth} className="space-y-4 mb-6">
           {!isLogin && (
             <div className="relative">
               <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -137,17 +137,17 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           >
             {isLoading ? 'Loading...' : (isLogin ? 'Sign In' : 'Create Account')}
           </button>
-        </form>
+        </form> */}
 
-        {/* Divider */}
-        <div className="relative mb-6">
+        {/* Divider - Removed since no form above */}
+        {/* <div className="relative mb-6">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300" />
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="px-2 bg-white text-gray-500 font-mulish">Or continue with</span>
           </div>
-        </div>
+        </div> */}
 
         {/* Social Login options */}
         <div className="space-y-4">
