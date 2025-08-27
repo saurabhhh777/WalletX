@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { generateToken } from '../middleware/auth';
 import { User, IUser } from '../models/User';
 import { EthereumWalletService } from '../services/ethereumWallet';
@@ -248,7 +249,8 @@ export const logout = (req: Request, res: Response): void => {
 export const linkGoogleAccount = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = req.user as IUser;
-    const currentUser = await User.findById(req.headers['user-id'] as string);
+    const userId = req.query.userId as string;
+    const currentUser = await User.findById(userId);
     
     if (!currentUser) {
       res.status(404).json({ message: 'User not found' });
@@ -283,7 +285,8 @@ export const linkGoogleAccount = async (req: Request, res: Response): Promise<vo
 export const linkGitHubAccount = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = req.user as IUser;
-    const currentUser = await User.findById(req.headers['user-id'] as string);
+    const userId = req.query.userId as string;
+    const currentUser = await User.findById(userId);
     
     if (!currentUser) {
       res.status(404).json({ message: 'User not found' });
@@ -318,9 +321,16 @@ export const linkGitHubAccount = async (req: Request, res: Response): Promise<vo
 export const unlinkProvider = async (req: Request, res: Response): Promise<void> => {
   try {
     const { provider } = req.params;
-    const userId = req.headers['user-id'] as string;
+    const token = req.headers['authorization']?.replace('Bearer ', '');
     
-    const user = await User.findById(userId);
+    if (!token) {
+      res.status(401).json({ message: 'Authentication required' });
+      return;
+    }
+    
+    // Decode the token to get user ID
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const user = await User.findById(decoded.userId);
     if (!user) {
       res.status(404).json({ message: 'User not found' });
       return;

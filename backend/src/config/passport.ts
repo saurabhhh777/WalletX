@@ -85,6 +85,7 @@ export const configurePassport = (): void => {
         clientID: process.env.GITHUB_CLIENT_ID!,
         clientSecret: process.env.GITHUB_CLIENT_SECRET!,
         callbackURL: '/auth/github/callback',
+        scope: ['user:email'],
       },
       async (accessToken: string, refreshToken: string, profile: any, done: any) => {
         try {
@@ -123,6 +124,29 @@ export const configurePassport = (): void => {
           return done(null, user);
         } catch (error) {
           console.error('GitHub auth error:', error);
+          return done(error as Error);
+        }
+      }
+    )
+  );
+
+  // GitHub OAuth Strategy for Account Linking
+  passport.use(
+    'github-link',
+    new GitHubStrategy(
+      {
+        clientID: process.env.GITHUB_CLIENT_ID!,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+        callbackURL: '/auth/link/github/callback',
+        scope: ['user:email'],
+      },
+      async (accessToken: string, refreshToken: string, profile: any, done: any) => {
+        try {
+          // For account linking, we don't create a new user
+          // The user will be linked in the controller
+          return done(null, profile);
+        } catch (error) {
+          console.error('GitHub link auth error:', error);
           return done(error as Error);
         }
       }

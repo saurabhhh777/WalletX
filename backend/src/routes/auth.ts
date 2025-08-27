@@ -33,8 +33,8 @@ router.post('/logout', logout);
 // Account linking routes
 router.get('/link/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 router.get('/link/google/callback', passport.authenticate('google', { session: false }), linkGoogleAccount);
-router.get('/link/github', passport.authenticate('github', { scope: ['user:email'] }));
-router.get('/link/github/callback', passport.authenticate('github', { session: false }), linkGitHubAccount);
+router.get('/link/github', passport.authenticate('github-link', { scope: ['user:email'] }));
+router.get('/link/github/callback', passport.authenticate('github-link', { session: false }), linkGitHubAccount);
 router.post('/unlink/:provider', unlinkProvider);
 
 export default router; 
