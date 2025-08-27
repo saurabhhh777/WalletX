@@ -41,7 +41,9 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
     isLoading,
     isAuthenticated,
     user: user ? 'User exists' : 'No user',
-    token: localStorage.getItem('authToken') ? 'Token exists' : 'No token'
+    userData: user,
+    token: localStorage.getItem('authToken') ? 'Token exists' : 'No token',
+    tokenValue: localStorage.getItem('authToken')?.substring(0, 20) + '...'
   });
 
   const handleLogout = () => {
@@ -83,7 +85,23 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
   }
 
   // Show login prompt if not authenticated
-  if (!isAuthenticated || !user) {
+  // Check if there's a token in localStorage as a fallback
+  const hasToken = localStorage.getItem('authToken');
+  
+  // If we have a token but no user data yet, show loading
+  if (hasToken && !user && !isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-poppins flex items-center justify-center">
+        <div className="bg-white rounded-2xl p-8 shadow-lg">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 text-center">Loading user data...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  // If no token and not authenticated, show login prompt
+  if (!isAuthenticated && !hasToken) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-poppins">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -106,6 +124,41 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
                   Refresh Page
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // If we have a token but user data is still loading, show loading
+  if (hasToken && !user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-poppins flex items-center justify-center">
+        <div className="bg-white rounded-2xl p-8 shadow-lg">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 text-center">Loading user data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If we don't have user data, show error
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-poppins">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">
+            <div className="bg-white rounded-2xl p-8 shadow-lg">
+              <User className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">User Data Not Found</h2>
+              <p className="text-gray-600 mb-6">Unable to load user profile data.</p>
+              <button
+                onClick={() => navigate('/')}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              >
+                Go to Home
+              </button>
             </div>
           </div>
         </div>
