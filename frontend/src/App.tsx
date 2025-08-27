@@ -17,7 +17,6 @@ import { ProfilePage } from './pages/ProfilePage';
 import { AuthCallback } from './components/AuthCallback';
 import { Footer } from './components/Footer';
 import { DarkModeToggle } from './components/DarkModeToggle';
-import { DarkModeTest } from './components/DarkModeTest';
 
 const AppContent: React.FC = () => {
   const { ethereumWallet, solanaWallet } = useWallet();
@@ -57,7 +56,6 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col transition-colors duration-200" style={{ backgroundColor: 'var(--bg-primary)' }}>
-      <DarkModeTest />
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<HomePage />} />

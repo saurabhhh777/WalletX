@@ -47,10 +47,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     } else {
       document.documentElement.classList.remove('dark');
       document.body.classList.remove('dark');
-      document.documentElement.style.setProperty('--bg-primary', '#ffffff');
-      document.documentElement.style.setProperty('--bg-secondary', '#f9fafb');
-      document.documentElement.style.setProperty('--text-primary', '#111827');
-      document.documentElement.style.setProperty('--text-secondary', '#6b7280');
+      document.documentElement.style.setProperty('--bg-primary', '#f8fafc');
+      document.documentElement.style.setProperty('--bg-secondary', '#ffffff');
+      document.documentElement.style.setProperty('--text-primary', '#1e293b');
+      document.documentElement.style.setProperty('--text-secondary', '#475569');
     }
     
     // Force a repaint to ensure styles are applied
@@ -78,10 +78,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       document.documentElement.classList.remove('dark');
       document.body.classList.remove('dark');
       // Reset CSS custom properties
-      document.documentElement.style.setProperty('--bg-primary', '#ffffff');
-      document.documentElement.style.setProperty('--bg-secondary', '#f9fafb');
-      document.documentElement.style.setProperty('--text-primary', '#111827');
-      document.documentElement.style.setProperty('--text-secondary', '#6b7280');
+      document.documentElement.style.setProperty('--bg-primary', '#f8fafc');
+      document.documentElement.style.setProperty('--bg-secondary', '#ffffff');
+      document.documentElement.style.setProperty('--text-primary', '#1e293b');
+      document.documentElement.style.setProperty('--text-secondary', '#475569');
       console.log('ThemeContext: Removed dark class from document and body');
       console.log('ThemeContext: Current classes on html:', document.documentElement.className);
       console.log('ThemeContext: Current classes on body:', document.body.className);
@@ -100,10 +100,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       document.documentElement.style.setProperty('--text-primary', '#ffffff');
       document.documentElement.style.setProperty('--text-secondary', '#d1d5db');
     } else {
-      document.documentElement.style.setProperty('--bg-primary', '#ffffff');
-      document.documentElement.style.setProperty('--bg-secondary', '#f9fafb');
-      document.documentElement.style.setProperty('--text-primary', '#111827');
-      document.documentElement.style.setProperty('--text-secondary', '#6b7280');
+      document.documentElement.style.setProperty('--bg-primary', '#f8fafc');
+      document.documentElement.style.setProperty('--bg-secondary', '#ffffff');
+      document.documentElement.style.setProperty('--text-primary', '#1e293b');
+      document.documentElement.style.setProperty('--text-secondary', '#475569');
     }
   }, []);
 
