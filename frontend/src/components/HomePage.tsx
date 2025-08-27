@@ -128,20 +128,14 @@ export const HomePage: React.FC = () => {
           {isAuthenticated ? (
             <>
               <button
-                onClick={() => {
-                  console.log('Dashboard button clicked, navigating to /dashboard');
-                  window.location.href = '/dashboard';
-                }}
+                onClick={() => window.location.href = '/dashboard'}
                 className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
               >
                 <Wallet className="w-5 h-5" />
                 <span>Go to Dashboard</span>
               </button>
               <button
-                onClick={() => {
-                  console.log('Profile button clicked, navigating to /profile');
-                  window.location.href = '/profile';
-                }}
+                onClick={() => window.location.href = '/profile'}
                 className="bg-white text-gray-700 px-8 py-4 rounded-lg font-semibold text-lg border border-gray-300 hover:bg-gray-50 transition-colors flex items-center space-x-2"
               >
                 <User className="w-5 h-5" />
@@ -211,8 +205,9 @@ export const HomePage: React.FC = () => {
             {/* Ethereum Wallet Card */}
             <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                {/* Ethereum Symbol */}
+                <svg className="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
                 </svg>
               </div>
               <h4 className="text-xl font-bold text-gray-900 mb-2">Ethereum Wallet</h4>
@@ -245,8 +240,9 @@ export const HomePage: React.FC = () => {
             {/* Solana Wallet Card */}
             <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                {/* Solana Symbol */}
+                <svg className="w-8 h-8 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M13.719 0H0v13.719h13.719V0zM24 10.281H10.281V24H24V10.281z"/>
                 </svg>
               </div>
               <h4 className="text-xl font-bold text-gray-900 mb-2">Solana Wallet</h4>

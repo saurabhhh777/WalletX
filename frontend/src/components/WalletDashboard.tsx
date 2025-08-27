@@ -110,10 +110,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                 Home
               </button>
               <button
-                onClick={() => {
-                  console.log('Profile button clicked, navigating to /profile');
-                  window.location.href = '/profile';
-                }}
+                onClick={() => window.location.href = '/profile'}
                 className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer z-10"
                 title="Profile"
                 style={{ position: 'relative', zIndex: 10 }}
@@ -130,16 +127,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                   </div>
                 )}
               </button>
-              {/* Test button */}
-              <button
-                onClick={() => {
-                  alert('Test button works!');
-                  navigate('/');
-                }}
-                className="bg-red-500 text-white px-2 py-1 rounded text-xs ml-2"
-              >
-                Test
-              </button>
+
             </div>
           </div>
         </div>
@@ -153,7 +141,10 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
                 <div className="bg-blue-100 p-2 rounded-lg">
-                  <Coins className="w-6 h-6 text-blue-600" />
+                  {/* Ethereum Symbol */}
+                  <svg className="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                  </svg>
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 font-jost">Ethereum Wallet</h3>
               </div>
@@ -182,7 +173,10 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
                 <div className="bg-purple-100 p-2 rounded-lg">
-                  <Coins className="w-6 h-6 text-purple-600" />
+                  {/* Solana Symbol */}
+                  <svg className="w-6 h-6 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13.719 0H0v13.719h13.719V0zM24 10.281H10.281V24H24V10.281z"/>
+                  </svg>
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 font-jost">Solana Wallet</h3>
               </div>
@@ -219,7 +213,10 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              <Coins className="w-4 h-4 text-blue-600" />
+              {/* Ethereum Symbol */}
+              <svg className="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+              </svg>
               <span>Ethereum</span>
             </button>
             <button
@@ -230,7 +227,10 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              <Coins className="w-4 h-4 text-purple-600" />
+              {/* Solana Symbol */}
+              <svg className="w-4 h-4 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13.719 0H0v13.719h13.719V0zM24 10.281H10.281V24H24V10.281z"/>
+              </svg>
               <span>Solana</span>
             </button>
           </div>
