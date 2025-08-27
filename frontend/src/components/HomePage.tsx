@@ -6,9 +6,17 @@ import { User, LogOut, Wallet, Star, Phone } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export const HomePage: React.FC = () => {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
   const navigate = useNavigate();
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  // Debug logging
+  console.log('HomePage Debug:', {
+    isLoading,
+    isAuthenticated,
+    user: user ? 'User exists' : 'No user',
+    userData: user
+  });
 
   const handleGetStarted = () => {
     if (!isAuthenticated) {
@@ -92,28 +100,63 @@ export const HomePage: React.FC = () => {
 
         {/* Hero Section */}
         <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold text-gray-900 mb-6">
-            A wallet system that works like a{' '}
-            <span className="text-teal-500">Professional</span>
-          </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Secure digital assets deserve a system that does it all, from creating wallets and smooth transactions to helping you manage and track your crypto portfolio.
-          </p>
+          {isAuthenticated ? (
+            <>
+              <h2 className="text-5xl font-bold text-gray-900 mb-6">
+                Welcome back,{' '}
+                <span className="text-teal-500">{user?.name || 'User'}</span>
+              </h2>
+              <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                Your secure digital assets are ready. Access your dashboard to manage wallets, track transactions, and monitor your crypto portfolio.
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-5xl font-bold text-gray-900 mb-6">
+                A wallet system that works like a{' '}
+                <span className="text-teal-500">Professional</span>
+              </h2>
+              <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                Secure digital assets deserve a system that does it all, from creating wallets and smooth transactions to helping you manage and track your crypto portfolio.
+              </p>
+            </>
+          )}
         </div>
 
         {/* Action Buttons */}
         <div className="flex justify-center space-x-4 mb-16">
-          <button
-            onClick={handleGetStarted}
-            className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-          >
-            <Star className="w-5 h-5" />
-            <span>Create Wallet</span>
-          </button>
-          <button className="bg-white text-gray-700 px-8 py-4 rounded-lg font-semibold text-lg border border-gray-300 hover:bg-gray-50 transition-colors flex items-center space-x-2">
-            <Phone className="w-5 h-5" />
-            <span>Learn More</span>
-          </button>
+          {isAuthenticated ? (
+            <>
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+              >
+                <Wallet className="w-5 h-5" />
+                <span>Go to Dashboard</span>
+              </button>
+              <button
+                onClick={() => navigate('/profile')}
+                className="bg-white text-gray-700 px-8 py-4 rounded-lg font-semibold text-lg border border-gray-300 hover:bg-gray-50 transition-colors flex items-center space-x-2"
+              >
+                <User className="w-5 h-5" />
+                <span>View Profile</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={handleGetStarted}
+                className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+              >
+                <Star className="w-5 h-5" />
+                <span>Create Wallet</span>
+              </button>
+              <button className="bg-white text-gray-700 px-8 py-4 rounded-lg font-semibold text-lg border border-gray-300 hover:bg-gray-50 transition-colors flex items-center space-x-2">
+                <Phone className="w-5 h-5" />
+                <span>Learn More</span>
+              </button>
+            </>
+          )}
         </div>
 
         {/* Trusted by Section */}
