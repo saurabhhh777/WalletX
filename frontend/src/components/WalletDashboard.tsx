@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useWallet } from '../contexts/WalletContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { EthereumTab } from './EthereumTab';
 import { SolanaTab } from './SolanaTab';
 import { SettingsPage } from './SettingsPage';
-import { ProfilePage } from './ProfilePage';
 import { RefreshCw, Trash2, Home, Settings, Coins, User } from 'lucide-react';
 import { TransactionHistory } from './TransactionHistory';
 
@@ -15,9 +15,9 @@ interface WalletDashboardProps {
 export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) => {
   const { ethereumWallet, solanaWallet, refreshBalances, clearWallets, networkSettings, getNetworkDisplayName } = useWallet();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'ethereum' | 'solana'>('ethereum');
   const [showSettings, setShowSettings] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
@@ -55,18 +55,9 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
     setShowSettings(false);
   };
 
-  const handleBackFromProfile = () => {
-    setShowProfile(false);
-  };
-
   // Show settings page if active
   if (showSettings) {
     return <SettingsPage onBack={handleBackFromSettings} />;
-  }
-
-  // Show profile page if active
-  if (showProfile) {
-    return <ProfilePage onBack={handleBackFromProfile} />;
   }
 
   return (
@@ -106,7 +97,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                 Home
               </button>
               <button
-                onClick={() => setShowProfile(true)}
+                onClick={() => navigate('/profile')}
                 className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 title="Profile"
               >

@@ -12,6 +12,7 @@ import { ContactUs } from './pages/ContactUs';
 import { HelpCenter } from './pages/HelpCenter';
 import { Security } from './pages/Security';
 import { Features } from './pages/Features';
+import { ProfilePage } from './pages/ProfilePage';
 import { AuthCallback } from './components/AuthCallback';
 import { Footer } from './components/Footer';
 
@@ -66,6 +67,7 @@ const AppContent: React.FC = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/auth-callback" element={<AuthCallback />} />
           <Route path="/dashboard" element={<WalletDashboard onGoHome={handleGoHome} />} />
+          <Route path="/profile" element={<ProfilePage onBack={handleBack} />} />
           <Route path="/privacy" element={<PrivacyPolicy onBack={handleBack} />} />
           <Route path="/terms" element={<TermsOfService onBack={handleBack} />} />
           <Route path="/cookies" element={<CookiesPolicy onBack={handleBack} />} />
