@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocat
 import { Toaster } from 'react-hot-toast';
 import { WalletProvider, useWallet } from './contexts/WalletContext';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { HomePage } from './components/HomePage';
 import { WalletDashboard } from './components/WalletDashboard';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
@@ -15,6 +16,8 @@ import { Features } from './pages/Features';
 import { ProfilePage } from './pages/ProfilePage';
 import { AuthCallback } from './components/AuthCallback';
 import { Footer } from './components/Footer';
+import { DarkModeToggle } from './components/DarkModeToggle';
+import { DarkModeTest } from './components/DarkModeTest';
 
 const AppContent: React.FC = () => {
   const { ethereumWallet, solanaWallet } = useWallet();
@@ -53,7 +56,8 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col transition-colors duration-200" style={{ backgroundColor: 'var(--bg-primary)' }}>
+      <DarkModeTest />
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -78,20 +82,22 @@ const AppContent: React.FC = () => {
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <WalletProvider>
-          <AppContent />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: { background: '#363636', color: '#fff' },
-              success: { duration: 3000, iconTheme: { primary: '#4ade80', secondary: '#fff' } },
-              error: { duration: 5000, iconTheme: { primary: '#ef4444', secondary: '#fff' } },
-            }}
-          />
-        </WalletProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <WalletProvider>
+            <AppContent />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: { background: '#363636', color: '#fff' },
+                success: { duration: 3000, iconTheme: { primary: '#4ade80', secondary: '#fff' } },
+                error: { duration: 5000, iconTheme: { primary: '#ef4444', secondary: '#fff' } },
+              }}
+            />
+          </WalletProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </Router>
   );
 }

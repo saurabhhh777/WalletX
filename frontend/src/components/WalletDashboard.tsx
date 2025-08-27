@@ -7,6 +7,7 @@ import { SolanaTab } from './SolanaTab';
 import { SettingsPage } from './SettingsPage';
 import { RefreshCw, Trash2, Home, Settings, Coins, User } from 'lucide-react';
 import { TransactionHistory } from './TransactionHistory';
+import { DarkModeToggle } from './DarkModeToggle';
 
 interface WalletDashboardProps {
   onGoHome: () => void;
@@ -69,9 +70,9 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
   }
 
   return (
-    <div className="min-h-screen bg-white font-poppins">
+    <div className="min-h-screen font-poppins transition-colors duration-200" style={{ backgroundColor: 'var(--bg-primary)' }}>
       {/* Header */}
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
+      <header className="border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 transition-colors duration-200" style={{ backgroundColor: 'var(--bg-secondary)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-4">
@@ -79,21 +80,22 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                 <Home className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 font-jost">WalletX Dashboard</h1>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white font-jost">WalletX Dashboard</h1>
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <DarkModeToggle />
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
-                className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center space-x-2 font-poppins"
+                className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2 font-poppins"
               >
                 <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                 <span>Refresh</span>
               </button>
               <button
                 onClick={() => setShowSettings(true)}
-                className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center space-x-2 font-poppins"
+                className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2 font-poppins"
               >
                 <Settings className="h-4 w-4" />
                 <span>Settings</span>

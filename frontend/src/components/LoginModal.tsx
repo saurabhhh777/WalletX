@@ -68,7 +68,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4 relative">
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-8 max-w-md w-full mx-4 relative">
         {/* Close button */}
         <button
           onClick={onClose}
@@ -79,10 +79,10 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 font-jost mb-2">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white font-jost mb-2">
             {isLogin ? 'Welcome Back' : 'Create Your Account'}
           </h2>
-          <p className="text-gray-600 font-mulish">
+          <p className="text-gray-600 dark:text-gray-300 font-mulish">
             {isLogin 
               ? 'Sign in with your social account to access your wallets'
               : 'Sign up with your social account to create your first wallet'
@@ -154,7 +154,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           {/* Google Login */}
           <button
             onClick={handleGoogleLogin}
-            className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 flex items-center justify-center space-x-3 hover:bg-gray-50 transition-colors font-medium font-poppins"
+            className="w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 flex items-center justify-center space-x-3 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors font-medium font-poppins"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -189,7 +189,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
         {/* Toggle between login and signup */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500 font-mulish">
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-mulish">
             {isLogin ? "Don't have an account? " : "Already have an account? "}
             <button
               onClick={() => {
@@ -207,7 +207,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500 font-mulish">
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-mulish">
             By {isLogin ? 'signing in' : 'signing up'}, you agree to our{' '}
             <a href="/terms" className="text-blue-600 hover:underline">
               Terms of Service
