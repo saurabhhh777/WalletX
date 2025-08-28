@@ -134,6 +134,68 @@ export class SolanaWalletService {
     }
   }
 
+  async getRecentTransactions(address: string, limit: number = 10): Promise<Array<{
+    signature: string;
+    slot: number;
+    timestamp?: number;
+    type: 'send' | 'receive' | 'other';
+    amount: string; // in SOL
+    from?: string;
+    to?: string;
+    status: 'confirmed' | 'failed' | 'pending';
+  }>> {
+    try {
+      const publicKey = new PublicKey(address);
+      const signatures = await this.connection.getSignaturesForAddress(publicKey, { limit });
+      const results: Array<{ signature: string; slot: number; timestamp?: number; type: 'send' | 'receive' | 'other'; amount: string; from?: string; to?: string; status: 'confirmed' | 'failed' | 'pending'; }> = [];
+
+      for (const sig of signatures) {
+        const tx = await this.connection.getParsedTransaction(sig.signature, { maxSupportedTransactionVersion: 0 });
+        if (!tx) {
+          results.push({ signature: sig.signature, slot: sig.slot, timestamp: sig.blockTime || undefined, type: 'other', amount: '0', status: 'pending' });
+          continue;
+        }
+
+        let amountLamports = 0;
+        let from: string | undefined;
+        let to: string | undefined;
+        let type: 'send' | 'receive' | 'other' = 'other';
+
+        try {
+          const instructions = tx.transaction.message.instructions as any[];
+          for (const ix of instructions) {
+            if (ix.parsed && ix.parsed.type === 'transfer') {
+              const info = ix.parsed.info;
+              from = info.source;
+              to = info.destination;
+              const lamports = Number(info.lamports);
+              amountLamports += lamports;
+            }
+          }
+        } catch {}
+
+        if (from === address) type = 'send';
+        else if (to === address) type = 'receive';
+
+        results.push({
+          signature: sig.signature,
+          slot: sig.slot,
+          timestamp: tx.blockTime || undefined,
+          type,
+          amount: (amountLamports / LAMPORTS_PER_SOL).toFixed(9),
+          from,
+          to,
+          status: 'confirmed'
+        });
+      }
+
+      return results;
+    } catch (error) {
+      console.error('Error fetching recent Solana transactions:', error);
+      return [];
+    }
+  }
+
   validateAddress(address: string): boolean {
     try {
       new PublicKey(address);

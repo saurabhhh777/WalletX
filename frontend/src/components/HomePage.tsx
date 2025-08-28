@@ -5,6 +5,8 @@ import { LoginModal } from './LoginModal';
 import { User, LogOut, Wallet, Star, Phone } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { DarkModeToggle } from './DarkModeToggle';
+import ethimg from '../assets/ethimg.jpeg';
+import solimg from '../assets/solimg.jpeg';
 
 export const HomePage: React.FC = () => {
   const { user, isAuthenticated, logout, isLoading } = useAuth();
@@ -32,6 +34,16 @@ export const HomePage: React.FC = () => {
     toast.success('Logged out successfully');
   };
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 font-poppins transition-colors duration-200">
       {/* Header */}
@@ -46,16 +58,39 @@ export const HomePage: React.FC = () => {
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Features</a>
-              <a href="#security" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Security</a>
-              <a href="#compare" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Compare</a>
-              <a href="#pricing" className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Pricing</a>
+              <button 
+                onClick={() => scrollToSection('features')} 
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                Features
+              </button>
+              <button 
+                onClick={() => scrollToSection('security')} 
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                Security
+              </button>
+              <button 
+                onClick={() => scrollToSection('compare')} 
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                Compare
+              </button>
+              <button 
+                onClick={() => scrollToSection('pricing')} 
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                Pricing
+              </button>
             </div>
             
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <DarkModeToggle />
-                <div className="flex items-center space-x-2">
+                <button 
+                  onClick={() => window.location.href = '/profile'}
+                  className="flex items-center space-x-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg transition-colors cursor-pointer"
+                >
                   {user?.avatar ? (
                     <img
                       src={user.avatar}
@@ -70,7 +105,7 @@ export const HomePage: React.FC = () => {
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     {user?.name}
                   </span>
-                </div>
+                </button>
                 <button
                   onClick={handleLogout}
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
@@ -201,8 +236,8 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Wallet Type Selection */}
-        <div className="text-center mb-16">
+        {/* Features Section */}
+        <div id="features" className="text-center mb-16">
           <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Choose Your Wallet Type</h3>
           <p className="text-gray-600 dark:text-gray-300 mb-8">From Ethereum to Solana, customize your experience across multiple blockchains.</p>
           
@@ -210,10 +245,7 @@ export const HomePage: React.FC = () => {
             {/* Ethereum Wallet Card */}
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                {/* Ethereum Symbol */}
-                <svg className="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-                </svg>
+                <img src={ethimg} alt="Ethereum" className="w-8 h-8 rounded-full" />
               </div>
               <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Ethereum Wallet</h4>
               <p className="text-gray-600 dark:text-gray-300 mb-4">Secure Ethereum wallet supporting ETH and all ERC-20 tokens.</p>
@@ -245,10 +277,7 @@ export const HomePage: React.FC = () => {
             {/* Solana Wallet Card */}
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
               <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                {/* Solana Symbol */}
-                <svg className="w-8 h-8 text-purple-600 dark:text-purple-400" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M13.719 0H0v13.719h13.719V0zM24 10.281H10.281V24H24V10.281z"/>
-                </svg>
+                <img src={solimg} alt="Solana" className="w-8 h-8 rounded-full" />
               </div>
               <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Solana Wallet</h4>
               <p className="text-gray-600 dark:text-gray-300 mb-4">High-performance Solana wallet for lightning-fast transactions.</p>
@@ -312,7 +341,7 @@ export const HomePage: React.FC = () => {
         </div>
 
         {/* Security Section */}
-        <div className="text-center mb-16">
+        <div id="security" className="text-center mb-16">
           <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Security That Feels Like You</h3>
           <p className="text-gray-600 dark:text-gray-300 mb-8">From wallet creation to transaction signing, so your assets always stay secure.</p>
           
@@ -355,6 +384,178 @@ export const HomePage: React.FC = () => {
               </div>
               <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Mobile Ready</h4>
               <p className="text-sm text-gray-600 dark:text-gray-300">Responsive design works on all devices.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Compare Section */}
+        <div id="compare" className="text-center mb-16">
+          <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Compare Wallet Solutions</h3>
+          <p className="text-gray-600 dark:text-gray-300 mb-8">See how WalletX stacks up against other wallet solutions.</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
+              <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Traditional Wallets</h4>
+              <ul className="text-left space-y-2 mb-6">
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                  Single blockchain support
+                </li>
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                  Complex setup process
+                </li>
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                  Limited features
+                </li>
+              </ul>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
+              <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-4">WalletX</h4>
+              <ul className="text-left space-y-2 mb-6">
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Multi-chain support
+                </li>
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  One-click setup
+                </li>
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Advanced features
+                </li>
+              </ul>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
+              <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Enterprise Solutions</h4>
+              <ul className="text-left space-y-2 mb-6">
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  High cost
+                </li>
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Complex deployment
+                </li>
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Overkill for most users
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Pricing Section */}
+        <div id="pricing" className="text-center mb-16">
+          <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Simple, Transparent Pricing</h3>
+          <p className="text-gray-600 dark:text-gray-300 mb-8">Choose the plan that works best for you.</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
+              <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Free</h4>
+              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-4">$0</div>
+              <ul className="text-left space-y-2 mb-6">
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Up to 3 wallets
+                </li>
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Basic features
+                </li>
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Community support
+                </li>
+              </ul>
+              <button className="w-full bg-gray-600 text-white py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors">
+                Get Started Free
+              </button>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-800 border-2 border-blue-500 rounded-lg p-6 shadow-sm">
+              <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Pro</h4>
+              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-4">$9.99<span className="text-sm text-gray-500">/month</span></div>
+              <ul className="text-left space-y-2 mb-6">
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Unlimited wallets
+                </li>
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Advanced features
+                </li>
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Priority support
+                </li>
+              </ul>
+              <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                Start Pro Trial
+              </button>
+            </div>
+            
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
+              <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Enterprise</h4>
+              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-4">Custom</div>
+              <ul className="text-left space-y-2 mb-6">
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Custom solutions
+                </li>
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Dedicated support
+                </li>
+                <li className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  SLA guarantee
+                </li>
+              </ul>
+              <button className="w-full bg-gray-600 text-white py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors">
+                Contact Sales
+              </button>
             </div>
           </div>
         </div>

@@ -8,6 +8,8 @@ import { SettingsPage } from './SettingsPage';
 import { RefreshCw, Trash2, Home, Settings, Coins, User } from 'lucide-react';
 import { TransactionHistory } from './TransactionHistory';
 import { DarkModeToggle } from './DarkModeToggle';
+import ethimg from '../assets/ethimg.jpeg';
+import solimg from '../assets/solimg.jpeg';
 
 interface WalletDashboardProps {
   onGoHome: () => void;
@@ -138,10 +140,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
                 <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
-                  {/* Ethereum Symbol */}
-                  <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-                  </svg>
+                  <img src={ethimg} alt="Ethereum" className="w-6 h-6 rounded-full" />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white font-jost">Ethereum Wallet</h3>
               </div>
@@ -170,10 +169,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
                 <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded-lg">
-                  {/* Solana Symbol */}
-                  <svg className="w-6 h-6 text-purple-600 dark:text-purple-400" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M13.719 0H0v13.719h13.719V0zM24 10.281H10.281V24H24V10.281z"/>
-                  </svg>
+                  <img src={solimg} alt="Solana" className="w-6 h-6 rounded-full" />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white font-jost">Solana Wallet</h3>
               </div>
@@ -210,10 +206,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              {/* Ethereum Symbol */}
-              <svg className="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-              </svg>
+              <img src={ethimg} alt="Ethereum" className="w-4 h-4 rounded-full" />
               <span>Ethereum</span>
             </button>
             <button
@@ -224,10 +217,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              {/* Solana Symbol */}
-              <svg className="w-4 h-4 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M13.719 0H0v13.719h13.719V0zM24 10.281H10.281V24H24V10.281z"/>
-              </svg>
+              <img src={solimg} alt="Solana" className="w-4 h-4 rounded-full" />
               <span>Solana</span>
             </button>
           </div>

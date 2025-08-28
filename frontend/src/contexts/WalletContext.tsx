@@ -115,6 +115,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     } else {
       switch (network) {
         case 'mainnet':
+        case 'mainnet-beta':
           return 'Solana Mainnet';
         case 'devnet':
           return 'Solana Devnet';
@@ -433,10 +434,12 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     
     try {
       const signature = await solanaService.requestAirdrop(solanaWallet.address, amount);
-      // Wait a bit for the airdrop to be processed
+      // Wait a bit for the airdrop to be processed and then refresh balances
       setTimeout(async () => {
         await refreshBalances();
-      }, 2000);
+        // Trigger a custom event to refresh transaction history
+        window.dispatchEvent(new CustomEvent('refreshTransactionHistory'));
+      }, 3000); // Increased delay to ensure transaction is confirmed
       return signature;
     } catch (error) {
       console.error('Error requesting Solana airdrop:', error);
