@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useWallet } from '../contexts/WalletContext';
-import { Wifi, WifiOff } from 'lucide-react';
+import { Wifi } from 'lucide-react';
 
 interface HistoryItem {
   signature: string;

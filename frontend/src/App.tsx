@@ -15,7 +15,6 @@ import { Features } from './pages/Features';
 import { ProfilePage } from './pages/ProfilePage';
 import { AuthCallback } from './components/AuthCallback';
 import { Footer } from './components/Footer';
-import { DarkModeToggle } from './components/DarkModeToggle';
 import { useThemeInit } from './hooks/useThemeInit';
 
 const AppContent: React.FC = () => {
@@ -35,10 +34,7 @@ const AppContent: React.FC = () => {
     // All automatic redirects disabled for debugging
   }, [ethereumWallet, solanaWallet, location.pathname, navigate, isLoading, isAuthenticated]);
 
-  const handleGoHome = () => {
-    sessionStorage.setItem('manualHome', '1');
-    navigate('/');
-  };
+
 
   const handleBack = () => {
     if (ethereumWallet || solanaWallet) {
@@ -63,7 +59,7 @@ const AppContent: React.FC = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/auth-callback" element={<AuthCallback />} />
-          <Route path="/dashboard" element={<WalletDashboard onGoHome={handleGoHome} />} />
+          <Route path="/dashboard" element={<WalletDashboard />} />
           <Route path="/profile" element={<ProfilePage onBack={handleBack} />} />
           <Route path="/privacy" element={<PrivacyPolicy onBack={handleBack} />} />
           <Route path="/terms" element={<TermsOfService onBack={handleBack} />} />

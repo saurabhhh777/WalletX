@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { X, Github, Mail, Lock, User } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { API_ENDPOINTS, API_BASE_URL } from '../config/api';
+import { X, Github } from 'lucide-react';
+import { API_ENDPOINTS } from '../config/api';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -10,10 +9,6 @@ interface LoginModalProps {
 
 export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleLogin = () => {
     window.location.href = API_ENDPOINTS.GOOGLE_AUTH;
@@ -21,47 +16,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   const handleGitHubLogin = () => {
     window.location.href = API_ENDPOINTS.GITHUB_AUTH;
-  };
-
-  const handleEmailAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const endpoint = isLogin ? API_ENDPOINTS.LOGIN : API_ENDPOINTS.SIGNUP;
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          ...(isLogin ? {} : { name }),
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Store the token
-        localStorage.setItem('authToken', data.token);
-        
-        // Close modal and show success message
-        onClose();
-        toast.success(isLogin ? 'Welcome back!' : 'Account created successfully!');
-        
-        // Reload the page to update the auth state
-        window.location.reload();
-      } else {
-        toast.error(data.message || 'Authentication failed');
-      }
-    } catch (error) {
-      console.error('Auth error:', error);
-      toast.error('An error occurred. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   if (!isOpen) return null;
@@ -194,9 +148,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             <button
               onClick={() => {
                 setIsLogin(!isLogin);
-                setEmail('');
-                setPassword('');
-                setName('');
               }}
               className="text-blue-600 hover:underline font-medium"
             >

@@ -5,18 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { EthereumTab } from './EthereumTab';
 import { SolanaTab } from './SolanaTab';
 import { SettingsPage } from './SettingsPage';
-import { RefreshCw, Trash2, Home, Settings, Coins, User } from 'lucide-react';
+import { RefreshCw, Home, Settings, User } from 'lucide-react';
 import { TransactionHistory } from './TransactionHistory';
 import { DarkModeToggle } from './DarkModeToggle';
 import ethimg from '../assets/ethimg.jpeg';
 import solimg from '../assets/solimg.jpeg';
 
-interface WalletDashboardProps {
-  onGoHome: () => void;
-}
-
-export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) => {
-  const { ethereumWallet, solanaWallet, refreshBalances, clearWallets, networkSettings, getNetworkDisplayName } = useWallet();
+export const WalletDashboard: React.FC = () => {
+  const { ethereumWallet, solanaWallet, refreshBalances, networkSettings, getNetworkDisplayName } = useWallet();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'ethereum' | 'solana'>('ethereum');
@@ -29,7 +25,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
     userAvatar: user?.avatar,
     userName: user?.name,
     navigate: typeof navigate
-  });
+  }); 
 
   useEffect(() => {
     // Initial refresh
@@ -55,12 +51,7 @@ export const WalletDashboard: React.FC<WalletDashboardProps> = ({ onGoHome }) =>
     setIsRefreshing(false);
   };
 
-  const handleClearWallets = () => {
-    if (window.confirm('Are you sure you want to clear all wallets? This action cannot be undone.')) {
-      clearWallets();
-      onGoHome();
-    }
-  };
+
 
   const handleBackFromSettings = () => {
     setShowSettings(false);

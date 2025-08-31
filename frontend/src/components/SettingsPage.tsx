@@ -173,7 +173,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack }) => {
                         {showEthPrivateKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
                       <button
-                        onClick={() => copyToClipboard(ethereumWallet.privateKey)}
+                        onClick={() => copyToClipboard(ethereumWallet.privateKey || '')}
                         className="p-2 text-blue-600 hover:text-blue-700 transition-colors"
                       >
                         {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
@@ -234,7 +234,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onBack }) => {
                         {showSolPrivateKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
                       <button
-                        onClick={() => copyToClipboard(solanaWallet.privateKey)}
+                        onClick={() => copyToClipboard(solanaWallet.privateKey || '')}
                         className="p-2 text-purple-600 hover:text-purple-700 transition-colors"
                       >
                         {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}

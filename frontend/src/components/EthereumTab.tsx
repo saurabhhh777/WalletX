@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useWallet } from '../contexts/WalletContext';
 import { useAuth } from '../contexts/AuthContext';
-import { Download, Upload, Send, Copy, Check, QrCode, Wallet } from 'lucide-react';
+import { Upload, Send, Copy, Check, QrCode, Wallet } from 'lucide-react';
 import { QRCodeModal } from './QRCodeModal';
 import { CryptoPriceTicker } from './CryptoPriceTicker';
 import toast from 'react-hot-toast';

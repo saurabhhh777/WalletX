@@ -12,8 +12,6 @@ import {
   Shield, 
   Settings, 
   Edit3, 
-  Eye, 
-  EyeOff,
   Copy,
   Check,
   Wallet,
@@ -21,7 +19,6 @@ import {
   Bell,
   Lock,
   Globe,
-  Smartphone,
   Link,
   Unlink,
   Github
@@ -37,7 +34,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ onBack }) => {
   const { ethereumWallet, solanaWallet, clearWallets } = useWallet();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [showPassword, setShowPassword] = useState(false);
+
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLinking, setIsLinking] = useState(false);
