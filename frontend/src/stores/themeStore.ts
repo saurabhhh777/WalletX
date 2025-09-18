@@ -1,41 +1,44 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export type ThemeMode = 'light' | 'dark';
+
 interface ThemeState {
-  isDarkMode: boolean;
-  toggleDarkMode: () => void;
-  setDarkMode: (isDark: boolean) => void;
+  theme: ThemeMode; // explicit theme
+  setTheme: (mode: ThemeMode) => void;
+  toggleTheme: () => void;
+  applyThemeClass: (mode?: ThemeMode) => void;
+}
+
+function applyClass(mode: ThemeMode) {
+  if (mode === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
 }
 
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
-      isDarkMode: false,
-      toggleDarkMode: () => {
-        const newDarkMode = !get().isDarkMode;
-        set({ isDarkMode: newDarkMode });
-        
-        // Apply dark mode class to document
-        if (newDarkMode) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
+      theme: 'light',
+      setTheme: (mode: ThemeMode) => {
+        set({ theme: mode });
+        applyClass(mode);
       },
-      setDarkMode: (isDark: boolean) => {
-        set({ isDarkMode: isDark });
-        
-        // Apply dark mode class to document
-        if (isDark) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
+      toggleTheme: () => {
+        const next: ThemeMode = get().theme === 'dark' ? 'light' : 'dark';
+        set({ theme: next });
+        applyClass(next);
+      },
+      applyThemeClass: (mode?: ThemeMode) => {
+        const current = mode ?? get().theme;
+        applyClass(current);
       },
     }),
     {
-      name: 'theme-storage', // unique name for localStorage key
-      partialize: (state) => ({ isDarkMode: state.isDarkMode }), // only persist isDarkMode
+      name: 'theme-storage-v2',
+      partialize: (state) => ({ theme: state.theme }),
     }
   )
 ); 

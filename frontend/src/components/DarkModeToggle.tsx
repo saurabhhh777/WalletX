@@ -3,20 +3,22 @@ import { Sun, Moon } from 'lucide-react';
 import { useThemeStore } from '../stores/themeStore';
 
 export const DarkModeToggle: React.FC = () => {
-  const { isDarkMode, toggleDarkMode } = useThemeStore();
+  const { theme, toggleTheme } = useThemeStore();
 
   const handleToggle = () => {
-    toggleDarkMode();
+    toggleTheme();
   };
+
+  const isDark = theme === 'dark';
 
   return (
     <button
       onClick={handleToggle}
       className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 group"
       aria-label="Toggle dark mode"
-      title={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
+      title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
     >
-      {isDarkMode ? (
+      {isDark ? (
         <Sun className="w-4 h-4 text-yellow-500 group-hover:rotate-90 transition-transform duration-200" />
       ) : (
         <Moon className="w-4 h-4 text-gray-600 dark:text-gray-400 group-hover:rotate-12 transition-transform duration-200" />
