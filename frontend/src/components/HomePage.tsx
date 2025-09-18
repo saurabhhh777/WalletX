@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { LoginModal } from './LoginModal';
-import { User, LogOut, Wallet, Star, Phone } from 'lucide-react';
+import { User, LogOut, Star, Phone } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { DarkModeToggle } from './DarkModeToggle';
 import ethimg from '../assets/ethimg.jpeg';
@@ -51,9 +51,7 @@ export const HomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
-              <div className="bg-blue-600 p-2 rounded-lg">
-                <Wallet className="h-6 w-6 text-white" />
-              </div>
+              <img src="/favicon-32x32.png" alt="WalletX" className="w-8 h-8 rounded" />
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">WalletX</h1>
             </div>
             
@@ -171,7 +169,7 @@ export const HomePage: React.FC = () => {
                 onClick={() => window.location.href = '/dashboard'}
                 className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
               >
-                <Wallet className="w-5 h-5" />
+                <img src="/favicon-32x32.png" alt="Dashboard" className="w-5 h-5" />
                 <span>Go to Dashboard</span>
               </button>
               <button
@@ -226,7 +224,7 @@ export const HomePage: React.FC = () => {
         {/* Quick and Easy Setup Section */}
         <div className="text-center mb-16">
           <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Wallet className="w-12 h-12 text-gray-600 dark:text-gray-300" />
+            <img src="/favicon-32x32.png" alt="Setup" className="w-12 h-12" />
           </div>
           <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Quick and Easy Setup</h3>
           <div className="max-w-4xl mx-auto">
@@ -309,7 +307,7 @@ export const HomePage: React.FC = () => {
             {/* Both Wallets Card */}
             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
               <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Wallet className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+                <img src="/favicon-32x32.png" alt="Both Wallets" className="w-8 h-8" />
               </div>
               <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Both Wallets</h4>
               <p className="text-gray-600 dark:text-gray-300 mb-4">Complete multi-chain solution with both Ethereum and Solana.</p>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Wallet, Mail, MessageCircle } from 'lucide-react';
+import { Mail, MessageCircle } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
@@ -10,9 +10,7 @@ export const Footer: React.FC = () => {
           {/* Company Info */}
           <div className="md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-blue-600 p-2 rounded-lg">
-                <Wallet className="h-6 w-6 text-white" />
-              </div>
+              <img src="/favicon-32x32.png" alt="WalletX" className="w-8 h-8 rounded" />
               <h3 className="text-xl font-bold font-jost">WalletX</h3>
             </div>
             <p className="text-gray-300 mb-4 font-mulish">
