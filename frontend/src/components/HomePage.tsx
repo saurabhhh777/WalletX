@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { LoginModal } from './LoginModal';
 import { User, LogOut, Star, Phone } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { DarkModeToggle } from './DarkModeToggle';
@@ -11,8 +10,6 @@ import solimg from '../assets/solimg.jpeg';
 export const HomePage: React.FC = () => {
  const { user, isAuthenticated, logout, isLoading } = useAuth();
  const navigate = useNavigate();
- const [showLoginModal, setShowLoginModal] = useState(false);
-
  // Debug logging
  console.log('HomePage Debug:', {
  isLoading,
@@ -23,7 +20,7 @@ export const HomePage: React.FC = () => {
 
  const handleGetStarted = () => {
  if (!isAuthenticated) {
-  setShowLoginModal(true);
+  navigate("/signin");
   return;
  }
  navigate('/dashboard');
@@ -116,7 +113,6 @@ export const HomePage: React.FC = () => {
     <div className="flex items-center space-x-4">
     <DarkModeToggle />
     <button
-     onClick={() => setShowLoginModal(true)}
      className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
     >
      Get Started
@@ -569,7 +565,6 @@ export const HomePage: React.FC = () => {
   </div>
 
   {/* Login Modal */}
-  <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
  </div>
  );
 }; 

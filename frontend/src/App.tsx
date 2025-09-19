@@ -6,6 +6,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { HomePage } from './components/HomePage';
 import { WalletDashboard } from './components/WalletDashboard';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
+import { SignIn } from "./pages/SignIn";
+import { SignUp } from "./pages/SignUp";
 import { TermsOfService } from './pages/TermsOfService';
 import { CookiesPolicy } from './pages/CookiesPolicy';
 import { ContactUs } from './pages/ContactUs';
@@ -59,6 +61,8 @@ const AppContent: React.FC = () => {
     <Routes>
      <Route path="/" element={<HomePage />} />
      <Route path="/auth-callback" element={<AuthCallback />} />
+<Route path="/signin" element={<SignIn onBack={handleBack} />} />
+<Route path="/signup" element={<SignUp onBack={handleBack} />} />
      <Route path="/dashboard" element={<WalletDashboard />} />
      <Route path="/profile" element={<ProfilePage onBack={handleBack} />} />
      <Route path="/privacy" element={<PrivacyPolicy onBack={handleBack} />} />
