@@ -112,7 +112,7 @@ export const HomePage: React.FC = () => {
    ) : (
     <div className="flex items-center space-x-4">
     <DarkModeToggle />
-    <button
+    <button onClick={handleGetStarted}
      className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
     >
      Get Started
@@ -491,7 +491,7 @@ export const HomePage: React.FC = () => {
      Community support
     </li>
     </ul>
-    <button className="w-full bg-gray-600 text-white py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors">
+    <button onClick={handleGetStarted} className="w-full bg-gray-600 text-white py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors">
     Get Started Free
     </button>
    </div>
