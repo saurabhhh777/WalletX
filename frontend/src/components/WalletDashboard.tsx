@@ -12,216 +12,216 @@ import ethimg from '../assets/ethimg.jpeg';
 import solimg from '../assets/solimg.jpeg';
 
 export const WalletDashboard: React.FC = () => {
-  const { ethereumWallet, solanaWallet, refreshBalances, networkSettings, getNetworkDisplayName } = useWallet();
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'ethereum' | 'solana'>('ethereum');
-  const [showSettings, setShowSettings] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+ const { ethereumWallet, solanaWallet, refreshBalances, networkSettings, getNetworkDisplayName } = useWallet();
+ const { user } = useAuth();
+ const navigate = useNavigate();
+ const [activeTab, setActiveTab] = useState<'ethereum' | 'solana'>('ethereum');
+ const [showSettings, setShowSettings] = useState(false);
+ const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Debug logging
-  console.log('WalletDashboard Debug:', {
-    user: user ? 'User exists' : 'No user',
-    userAvatar: user?.avatar,
-    userName: user?.name,
-    navigate: typeof navigate
-  }); 
+ // Debug logging
+ console.log('WalletDashboard Debug:', {
+  user: user ? 'User exists' : 'No user',
+  userAvatar: user?.avatar,
+  userName: user?.name,
+  navigate: typeof navigate
+ }); 
 
-  useEffect(() => {
-    // Initial refresh
-    (async () => {
-      setIsRefreshing(true);
-      await refreshBalances();
-      setIsRefreshing(false);
-    })();
+ useEffect(() => {
+  // Initial refresh
+  (async () => {
+   setIsRefreshing(true);
+   await refreshBalances();
+   setIsRefreshing(false);
+  })();
 
-    // Periodic refresh every 15 seconds
-    const id = setInterval(async () => {
-      setIsRefreshing(true);
-      await refreshBalances();
-      setIsRefreshing(false);
-    }, 15000);
+  // Periodic refresh every 15 seconds
+  const id = setInterval(async () => {
+   setIsRefreshing(true);
+   await refreshBalances();
+   setIsRefreshing(false);
+  }, 15000);
 
-    return () => clearInterval(id);
-  }, [refreshBalances]);
+  return () => clearInterval(id);
+ }, [refreshBalances]);
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await refreshBalances();
-    setIsRefreshing(false);
-  };
+ const handleRefresh = async () => {
+  setIsRefreshing(true);
+  await refreshBalances();
+  setIsRefreshing(false);
+ };
 
 
 
-  const handleBackFromSettings = () => {
-    setShowSettings(false);
-  };
+ const handleBackFromSettings = () => {
+  setShowSettings(false);
+ };
 
-  // Show settings page if active
-  if (showSettings) {
-    return <SettingsPage onBack={handleBackFromSettings} />;
-  }
+ // Show settings page if active
+ if (showSettings) {
+  return <SettingsPage onBack={handleBackFromSettings} />;
+ }
 
-  return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 font-poppins transition-colors duration-200">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 transition-colors duration-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-4">
-              <div className="bg-gray-900 p-3 rounded-lg">
-                <Home className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white font-jost">WalletX Dashboard</h1>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <DarkModeToggle />
-              <button
-                onClick={handleRefresh}
-                disabled={isRefreshing}
-                className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2 font-poppins"
-              >
-                <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                <span>Refresh</span>
-              </button>
-              <button
-                onClick={() => setShowSettings(true)}
-                className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2 font-poppins"
-              >
-                <Settings className="h-4 w-4" />
-                <span>Settings</span>
-              </button>
-              <button
-                onClick={() => window.location.href = '/'}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors font-poppins"
-              >
-                Home
-              </button>
-              <button
-                onClick={() => window.location.href = '/profile'}
-                className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer z-10"
-                title="Profile"
-                style={{ position: 'relative', zIndex: 10 }}
-              >
-                {user?.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt={user.name}
-                    className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
-                  />
-                ) : (
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                    <User className="w-4 h-4 text-white" />
-                  </div>
-                )}
-              </button>
+ return (
+  <div className="min-h-screen bg-white font-poppins">
+   {/* Header */}
+   <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div className="flex justify-between items-center py-6">
+      <div className="flex items-center space-x-4">
+       <div className="bg-gray-900 p-3 rounded-lg">
+        <Home className="h-6 w-6 text-white" />
+       </div>
+       <div>
+        <h1 className="text-2xl font-bold text-black font-jost">WalletX Dashboard</h1>
+       </div>
+      </div>
+      <div className="flex items-center space-x-4">
+       <DarkModeToggle />
+       <button
+        onClick={handleRefresh}
+        disabled={isRefreshing}
+        className="bg-gray-100 text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center space-x-2 font-poppins"
+       >
+        <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+        <span>Refresh</span>
+       </button>
+       <button
+        onClick={() => setShowSettings(true)}
+        className="bg-gray-100 text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center space-x-2 font-poppins"
+       >
+        <Settings className="h-4 w-4" />
+        <span>Settings</span>
+       </button>
+       <button
+        onClick={() => window.location.href = '/'}
+        className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors font-poppins"
+       >
+        Home
+       </button>
+       <button
+        onClick={() => window.location.href = '/profile'}
+        className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer z-10"
+        title="Profile"
+        style={{ position: 'relative', zIndex: 10 }}
+       >
+        {user?.avatar ? (
+         <img
+          src={user.avatar}
+          alt={user.name}
+          className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
+         />
+        ) : (
+         <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+          <User className="w-4 h-4 text-white" />
+         </div>
+        )}
+       </button>
 
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Wallet Status */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-3">
-                <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
-                  <img src={ethimg} alt="Ethereum" className="w-6 h-6 rounded-full" />
-                </div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white font-jost">Ethereum Wallet</h3>
-              </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium font-poppins ${
-                ethereumWallet ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
-              }`}>
-                {ethereumWallet ? 'Connected' : 'Not Connected'}
-              </span>
-            </div>
-            {ethereumWallet && (
-              <div className="space-y-2 font-mulish">
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  <span className="font-medium">Network:</span> {getNetworkDisplayName('ethereum', networkSettings.ethereum)}
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  <span className="font-medium">Address:</span> {ethereumWallet.address.slice(0, 6)}...{ethereumWallet.address.slice(-4)}
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  <span className="font-medium">Balance:</span> {ethereumWallet.balance} ETH
-                </p>
-              </div>
-            )}
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-3">
-                <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded-lg">
-                  <img src={solimg} alt="Solana" className="w-6 h-6 rounded-full" />
-                </div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white font-jost">Solana Wallet</h3>
-              </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium font-poppins ${
-                solanaWallet ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
-              }`}>
-                {solanaWallet ? 'Connected' : 'Not Created'}
-              </span>
-            </div>
-            {solanaWallet && (
-              <div className="space-y-2 font-mulish">
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  <span className="font-medium">Network:</span> {getNetworkDisplayName('solana', networkSettings.solana)}
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  <span className="font-medium">Address:</span> {solanaWallet.address.slice(0, 6)}...{solanaWallet.address.slice(-4)}
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  <span className="font-medium">Balance:</span> {solanaWallet.balance} SOL
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Tab Navigation */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
-          <div className="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
-            <button
-              onClick={() => setActiveTab('ethereum')}
-              className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors font-poppins flex items-center justify-center space-x-2 ${
-                activeTab === 'ethereum'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <img src={ethimg} alt="Ethereum" className="w-4 h-4 rounded-full" />
-              <span>Ethereum</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('solana')}
-              className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors font-poppins flex items-center justify-center space-x-2 ${
-                activeTab === 'solana'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <img src={solimg} alt="Solana" className="w-4 h-4 rounded-full" />
-              <span>Solana</span>
-            </button>
-          </div>
-
-          {/* Tab Content */}
-          <div className="min-h-[400px]">
-            {activeTab === 'ethereum' ? <EthereumTab /> : <SolanaTab />}
-          </div>
-        </div>
-
-        {/* History */}
-        <TransactionHistory />
-      </main>
+      </div>
+     </div>
     </div>
-  );
+   </header>
+
+   {/* Main Content */}
+   <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    {/* Wallet Status */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+     <div className="bg-white border border-gray-200 rounded-xl p-6">
+      <div className="flex items-center justify-between mb-4">
+       <div className="flex items-center space-x-3">
+        <div className="bg-blue-100 p-2 rounded-lg">
+         <img src={ethimg} alt="Ethereum" className="w-6 h-6 rounded-full" />
+        </div>
+        <h3 className="text-lg font-bold text-black font-jost">Ethereum Wallet</h3>
+       </div>
+       <span className={`px-3 py-1 rounded-full text-xs font-medium font-poppins ${
+        ethereumWallet ? 'bg-green-100 text-green-800 dark:text-green-200' : 'bg-gray-100 text-gray-600 '
+       }`}>
+        {ethereumWallet ? 'Connected' : 'Not Connected'}
+       </span>
+      </div>
+      {ethereumWallet && (
+       <div className="space-y-2 font-mulish">
+        <p className="text-sm text-gray-600">
+         <span className="font-medium">Network:</span> {getNetworkDisplayName('ethereum', networkSettings.ethereum)}
+        </p>
+        <p className="text-sm text-gray-600">
+         <span className="font-medium">Address:</span> {ethereumWallet.address.slice(0, 6)}...{ethereumWallet.address.slice(-4)}
+        </p>
+        <p className="text-sm text-gray-600">
+         <span className="font-medium">Balance:</span> {ethereumWallet.balance} ETH
+        </p>
+       </div>
+      )}
+     </div>
+
+     <div className="bg-white border border-gray-200 rounded-xl p-6">
+      <div className="flex items-center justify-between mb-4">
+       <div className="flex items-center space-x-3">
+        <div className="bg-purple-100 p-2 rounded-lg">
+         <img src={solimg} alt="Solana" className="w-6 h-6 rounded-full" />
+        </div>
+        <h3 className="text-lg font-bold text-black font-jost">Solana Wallet</h3>
+       </div>
+       <span className={`px-3 py-1 rounded-full text-xs font-medium font-poppins ${
+        solanaWallet ? 'bg-green-100 text-green-800 dark:text-green-200' : 'bg-gray-100 text-gray-600 '
+       }`}>
+        {solanaWallet ? 'Connected' : 'Not Created'}
+       </span>
+      </div>
+      {solanaWallet && (
+       <div className="space-y-2 font-mulish">
+        <p className="text-sm text-gray-600">
+         <span className="font-medium">Network:</span> {getNetworkDisplayName('solana', networkSettings.solana)}
+        </p>
+        <p className="text-sm text-gray-600">
+         <span className="font-medium">Address:</span> {solanaWallet.address.slice(0, 6)}...{solanaWallet.address.slice(-4)}
+        </p>
+        <p className="text-sm text-gray-600">
+         <span className="font-medium">Balance:</span> {solanaWallet.balance} SOL
+        </p>
+       </div>
+      )}
+     </div>
+    </div>
+
+    {/* Tab Navigation */}
+    <div className="bg-white border border-gray-200 rounded-xl p-6">
+     <div className="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
+      <button
+       onClick={() => setActiveTab('ethereum')}
+       className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors font-poppins flex items-center justify-center space-x-2 ${
+        activeTab === 'ethereum'
+         ? 'bg-white text-black shadow-sm'
+         : 'text-gray-600 hover:text-black'
+       }`}
+      >
+       <img src={ethimg} alt="Ethereum" className="w-4 h-4 rounded-full" />
+       <span>Ethereum</span>
+      </button>
+      <button
+       onClick={() => setActiveTab('solana')}
+       className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors font-poppins flex items-center justify-center space-x-2 ${
+        activeTab === 'solana'
+         ? 'bg-white text-black shadow-sm'
+         : 'text-gray-600 hover:text-black'
+       }`}
+      >
+       <img src={solimg} alt="Solana" className="w-4 h-4 rounded-full" />
+       <span>Solana</span>
+      </button>
+     </div>
+
+     {/* Tab Content */}
+     <div className="min-h-[400px]">
+      {activeTab === 'ethereum' ? <EthereumTab /> : <SolanaTab />}
+     </div>
+    </div>
+
+    {/* History */}
+    <TransactionHistory />
+   </main>
+  </div>
+ );
 }; 
